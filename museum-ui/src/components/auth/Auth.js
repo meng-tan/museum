@@ -38,21 +38,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const responseGoogle = response => {
-  console.log("response google:")
-  console.log(response)
-
-  UserService.getInstance()
-    .googleLogin(response)
-    .then(() => {
-      console.log("after userservice:")
-      this.props.history.push('/exhibitions');
-    })
-}
-
-
-export default function Auth() {
+export default function Auth(props) {
   const classes = useStyles();
+
+  const responseGoogle = response => {
+    console.log("response google:")
+    console.log(response)
+  
+    UserService.getInstance()
+      .googleLogin(response)
+      .then(() => {
+        console.log("after userservice:")
+        props.history.push('/exhibitions');
+      })
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
