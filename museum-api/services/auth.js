@@ -27,19 +27,13 @@ exports.checkToken = (req, res, next) => {
 };
 
 
-//return a promise with user information
+//return a promise with user informations
 exports.getGoogleUser = (code) => {
     //verify the token using google client
-    return client.verifyIdToken({
-        idToken: code,
-        audience: config.google_client_id
-    }, (err, login) => {
-        if (err) {
-            throw new Error("error while authenticating google user: " + JSON.stringify(err));
-        } else {
-            console.log("login ticket:")
+    return client.verifyIdToken({ idToken: code, audience: config.google_client_id })
+        .then(login => {
+            console.log("login ticket")
             console.log(login)
-            
             //if verification is ok, google returns a jwt
             let payload = login.getPayload();
 
@@ -48,15 +42,18 @@ exports.getGoogleUser = (code) => {
             if (audience !== config.google_client_id) {
                 throw new Error("error while authenticating google user: audience mismatch: wanted [" + config.google_client_id + "] but was [" + audience + "]")
             }
+            //promise the creation of a user
             return {
                 username: payload['name'], //profile name
-                googleId: payload['sub'], //google id
-                email: payload['email']
-                //email_verified: payload['email_verified'], 
                 //pic: payload['picture'], //profile pic
+                googleId: payload['sub'], //google id
+                //email_verified: payload['email_verified'], 
+                email: payload['email']
             }
-        }
-
-    })
+        })
+        .catch(err => {
+            //throw an error if something goes wrong
+            throw new Error("error while authenticating google user: " + JSON.stringify(err));
+        })
 }
 
