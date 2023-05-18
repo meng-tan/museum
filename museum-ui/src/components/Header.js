@@ -1,65 +1,99 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Link from '@material-ui/core/Link';
-import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MuseumIcon from '@material-ui/icons/Museum';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import UserService from './service/UserService'
-import { withRouter } from "react-router-dom";
+import { useState, forwardRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-    nav: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        textTransform: 'uppercase'
-    },
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MuseumIcon from "@mui/icons-material/Museum";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 
-}));
+import UserService from "@service/UserService";
 
-export default function Header() {
-    const classes = useStyles();
+const AuthButton = () => {
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
 
-    const AuthButton = withRouter(
-        ({ history }) =>
-            UserService.getInstance().isLoggedIn()
-                ? <React.Fragment className={classes.wrapper}>
-                    <Button variant="contained"onClick={() => UserService.getInstance().logout()}>
-                        Logout
-                    </Button>
-                    <IconButton color="inherit" onClick={() => history.push("/orders")}>
-                        <AccountCircle />
-                    </IconButton>
-                </React.Fragment>
-                :
-                <Button 
-                variant="contained" 
-                href="/auth">Login/Signup</Button>
-    );
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-    return (
-        <AppBar position="sticky">
-            <Toolbar>
-                <Link href="/home" color="inherit">
-                    <IconButton color="inherit">
-                        <MuseumIcon />
-                    </IconButton>
-                </Link>
+  return UserService.getInstance().isLoggedIn() ? (
+    <>
+      <IconButton
+        aria-controls="menu-appbar"
+        onClick={handleMenu}
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={() => navigate("/orders")}>My Orders</MenuItem>
+        <MenuItem onClick={() => UserService.getInstance().logout()}>
+          Logout
+        </MenuItem>
+      </Menu>
+    </>
+  ) : (
+    <IconButton component={Link} to="/auth" color="inherit">
+      <AccountCircle />
+    </IconButton>
+  );
+};
 
-                <Grid container spacing={4} className={classes.nav}>
-                    <Grid item>
-                        <Link href="/exhibitions" color="inherit">Exhibitions</Link>
-                    </Grid>
-                </Grid>
+const Header = forwardRef((props, ref) => {
+  return (
+    <AppBar {...props} ref={ref}>
+      <Toolbar>
+        <IconButton component={Link} to="/" color="inherit">
+          <MuseumIcon />
+        </IconButton>
 
-                <AuthButton />
+        {/* todo: could change into a drawer on small screen */}
+        <Container
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            columnGap: {
+              xs: 1,
+              sm: 2
+            },
+            textTransform: "uppercase"
+          }}
+        >
+          <Typography variant="subtitle2" component={Link} to="/exhibitions">
+            Exhibition
+          </Typography>
 
-            </Toolbar>
-        </AppBar>
-    );
-}
+          <Typography variant="subtitle2" component={Link} to="/visit">
+            Visit
+          </Typography>
+        </Container>
 
-
+        <AuthButton />
+      </Toolbar>
+    </AppBar>
+  );
+});
+Header.displayName = "Header";
+export default Header;
