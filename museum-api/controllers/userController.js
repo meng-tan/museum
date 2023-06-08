@@ -189,8 +189,7 @@ exports.buyTickets = async (req, res) => {
       let user = await User.findById(userId).exec();
       await Promise.race([email(user.email, savedOrder), timeout(6000)]);
     } catch (error) {
-      console.log("Failed to send order confirmation");
-      console.log(error);
+      console.log("Failed to send order confirmation:", error);
     }
     res.status(200).json({ exhibitionOrder: savedOrder });
   } catch (err) {

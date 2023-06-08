@@ -38,8 +38,7 @@ exports.getGoogleUser = (code) => {
   return client
     .verifyIdToken({ idToken: code, audience: config.google_client_id })
     .then((login) => {
-      console.log("login ticket");
-      console.log(login);
+      console.log("login ticket:", login);
       //if verification is ok, google returns a jwt
       let payload = login.getPayload();
 
