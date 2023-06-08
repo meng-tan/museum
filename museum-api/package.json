@@ -1,7 +1,7 @@
 {
   "name": "museum-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "server for museum-ui, built with Express",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,16 +10,33 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
     "google-auth-library": "^5.5.1",
     "googleapis": "^39.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
-    "mongoose": "^5.7.12",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "mongoose": "^7.2.2",
     "nodemailer": "^6.4.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es2022": true
+    },
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    }
   }
 }
