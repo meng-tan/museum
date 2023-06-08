@@ -43,12 +43,12 @@ export default function Footer() {
             <Typography variant="overline" component="p">
               Contact
             </Typography>
-            <Typography component="a" href="tel:617-404-8080">
-              617-404-8080
+            <Typography component="a" href="tel:857-250-0027">
+              857-250-0027
             </Typography>
             <br />
-            <Typography component="a" href="mailto:information@museum.org">
-              information@museum.org
+            <Typography component="a" href="mailto:tanmeng.job@gmail.com">
+              tanmeng.job@gmail.com
             </Typography>
           </Grid>
         </Grid>

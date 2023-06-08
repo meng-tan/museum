@@ -1,39 +1,59 @@
-import { Alert } from "@mui/material";
 import axios from "axios";
 
+import { openAlert } from "../features/alertSlice";
+import store from "../store";
+
 const axiosInstance = axios.create({
-  baseURL: "https://museum-api.azurewebsites.net",
-  // headers: {'X-Custom-Header': 'foobar'},
+  // baseURL: "https://museum-api.azurewebsites.net",
+  baseURL: "http://localhost:3000",
+  headers: {
+    "Content-Type": "application/json"
+  },
   responseType: "json", // default
   timeout: 3000 // default is `0` (no timeout)
 });
 
 // Add a request interceptor
-const reqInterceptor = axiosInstance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    if (sessionStorage.getItem("token")) {
+      config.headers.Authorization = "Bearer " + sessionStorage.token;
+    }
     return config;
   },
   function (error) {
     // Do something with request error
-    <Alert severity="error">{error.message}</Alert>;
-
+    console.log("request err:", error);
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
-const resInterceptor = axiosInstance.interceptors.response.use(
-  function (response) {
+axiosInstance.interceptors.response.use(
+  (response) => {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+
+    // update token
+    if (response.headers.token) {
+      console.log("update token");
+      sessionStorage.setItem("token", response.headers.token);
+    }
     // return response;
     return response.data;
   },
-  function (error) {
+  (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    return Promise.reject(error);
+    store.dispatch(
+      openAlert({
+        err: error.response?.data?.err || error.message,
+        severity: "error"
+      })
+    );
+    console.log(error, store, store.getState());
+    return Promise.reject(error.response?.data?.err || error.message);
   }
 );
 

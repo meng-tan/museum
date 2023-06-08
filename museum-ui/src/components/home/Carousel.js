@@ -7,9 +7,7 @@ import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
-// eslint-disable-next-line import/no-unresolved
-import { useDeviceDimensions } from "@tools/Hooks";
-
+import { useDeviceDimensions } from "@tools/func";
 const imgArr = [
   {
     img: "img/slider/online.jpg",

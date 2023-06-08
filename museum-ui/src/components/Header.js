@@ -1,20 +1,28 @@
 import { useState, forwardRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MuseumIcon from "@mui/icons-material/Museum";
-import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import {
+  Typography,
+  Toolbar,
+  MenuItem,
+  Menu,
+  IconButton,
+  Container,
+  AppBar,
+  Avatar
+} from "@mui/material";
 
-import UserService from "@service/UserService";
+import { selectUser, thunkedLogout } from "../features/userSlice";
 
 const AuthButton = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = useSelector(selectUser);
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
@@ -24,38 +32,52 @@ const AuthButton = () => {
     setAnchorEl(null);
   };
 
-  return UserService.getInstance().isLoggedIn() ? (
+  return user.isLoggedIn ? (
     <>
       <IconButton
         aria-controls="menu-appbar"
         onClick={handleMenu}
         color="inherit"
       >
-        <AccountCircle />
+        <Avatar variant="rounded" sx={{ width: 24, height: 24 }}>
+          {user.username?.charAt(0)?.toUpperCase()}
+        </Avatar>
       </IconButton>
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => navigate("/orders")}>My Orders</MenuItem>
-        <MenuItem onClick={() => UserService.getInstance().logout()}>
+        <MenuItem
+          onClick={() => {
+            navigate("/dashboard");
+            handleClose();
+          }}
+        >
+          Dashboard
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/orders");
+            handleClose();
+          }}
+        >
+          My Orders
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            dispatch(thunkedLogout());
+            navigate("/");
+            handleClose();
+          }}
+        >
           Logout
         </MenuItem>
       </Menu>
     </>
   ) : (
-    <IconButton component={Link} to="/auth" color="inherit">
+    <IconButton component={Link} to="/login" color="inherit">
       <AccountCircle />
     </IconButton>
   );
@@ -82,7 +104,7 @@ const Header = forwardRef((props, ref) => {
           }}
         >
           <Typography variant="subtitle2" component={Link} to="/exhibitions">
-            Exhibition
+            Exhibitions
           </Typography>
 
           <Typography variant="subtitle2" component={Link} to="/visit">

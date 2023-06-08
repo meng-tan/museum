@@ -1,12 +1,9 @@
-import { useContext } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 
-import { HeaderContext } from "@tools/Context";
-
 export default function RouteLayout() {
-  const headerHeight = useContext(HeaderContext);
+  const headerHeight = useOutletContext();
 
   return (
     <Box

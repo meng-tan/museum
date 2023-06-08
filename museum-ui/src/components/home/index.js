@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { Button, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
+import { Button, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { debounce } from "@mui/material/utils";

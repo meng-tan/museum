@@ -1,288 +1,215 @@
-import { Component } from "react";
+import { useReducer } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
-import { Box } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { Box, Button, TextField } from "@mui/material";
 
-import UserService from "@service/UserService";
+import axiosInstance from "@service/axiosInstance";
+import urlConfig from "@service/urlConfig";
 
-class Signup extends Component {
-  constructor(props) {
-    super(props);
+import { PATTERN } from "@tools/constant";
 
-    this.state = {
-      email: {
-        value: "",
-        isTouched: false
-      },
-      username: {
-        value: "",
-        isTouched: false
-      },
-      password: {
-        value: "",
-        isTouched: false
-      },
-      confirmPassword: {
-        value: "",
-        isTouched: false
-      },
-      errors: {
-        isEmailValid: null,
-        isUsernameValid: null,
-        isPasswordValid: null,
-        isConfirmPasswordValid: null
-      },
-      open: false,
-      err: ""
-    };
-    this.userService = UserService.getInstance();
+export function reducer(state, action) {
+  switch (action.type) {
+    case "input_change": {
+      return {
+        ...state,
+        [action.evt.target.name]: {
+          ...state[action.evt.target.name],
+          isTouched: true,
+          value: action.evt.target.value
+        }
+      };
+    }
+    case "validate_field": {
+      return {
+        ...state,
+        [action.field]: {
+          ...state[action.field],
+          isValid: action.isFieldValid
+        }
+      };
+    }
   }
+  throw Error("Unknown action: " + action.type);
+}
 
-  handleClose = () => {
-    this.setState({
-      open: false
+const Signup = () => {
+  const navigate = useNavigate();
+  const [onSuccess] = useOutletContext();
+
+  const [state, dispatch] = useReducer(reducer, {
+    email: {
+      value: "",
+      isTouched: false,
+      regex: PATTERN.EMAIL,
+      isValid: null
+    },
+    username: {
+      value: "",
+      isTouched: false,
+      regex: PATTERN.NAME,
+      isValid: null
+    },
+    password: {
+      value: "",
+      isTouched: false,
+      regex: PATTERN.PASSWORD,
+      isValid: null
+    },
+    confirmPassword: {
+      value: "",
+      isTouched: false,
+      isValid: null
+    }
+  });
+
+  const handleInputChange = (evt) => {
+    if (!state[evt.target.name].isTouched && !evt.target.value) {
+      return;
+    }
+    dispatch({
+      type: "input_change",
+      evt
     });
   };
 
-  signup = () => {
-    if (!this.validateForm()) {
+  const validateField = (field) => {
+    if (state[field].isTouched) {
+      const isFieldValid = state[field].regex.test(state[field].value);
+      dispatch({ type: "validate_field", field, isFieldValid });
+    }
+  };
+
+  const validateConfirmPassword = () => {
+    if (state.confirmPassword.isTouched) {
+      const isFieldValid = state.confirmPassword.value === state.password.value;
+      dispatch({
+        type: "validate_field",
+        field: "confirmPassword",
+        isFieldValid
+      });
+    }
+  };
+
+  const isFormValid = () => {
+    return Object.values(state).every(({ isValid }) => isValid === true);
+  };
+
+  const signup = () => {
+    if (!isFormValid()) {
       return;
     }
-    this.userService
-      .register({
-        email: this.state.email.value,
-        username: this.state.username.value,
-        password: this.state.password.value
+
+    axiosInstance
+      .post(urlConfig.register, {
+        email: state.email.value,
+        username: state.username.value,
+        password: state.password.value
       })
       .then((res) => {
-        console.log(res);
-        if (res.err) {
-          console.log("res.err:" + res.err);
-          this.setState({
-            err: res.err,
-            open: true
-          });
-        } else {
-          this.props.history.push("/auth/login");
-        }
+        onSuccess(res);
+        navigate("/dashboard");
       });
   };
 
-  handleInputChange = (evt) => {
-    if (!this.state[evt.target.name].isTouched && !evt.target.value) {
-      return;
-    }
-    this.setState((prevState) => ({
-      ...prevState,
-      [evt.target.name]: {
-        isTouched: true,
-        value: evt.target.value
-      }
-    }));
-  };
-
-  validateEmail = () => {
-    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if (this.state.email.isTouched) {
-      const isFieldValid = regex.test(this.state.email.value);
-      this.setState((prevState) => ({
-        errors: {
-          ...prevState.errors,
-          isEmailValid: isFieldValid
+  return (
+    <Box method="post" component="form" noValidate onChange={handleInputChange}>
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        id="email"
+        label="Email"
+        name="email"
+        autoComplete="email"
+        value={state.email.value}
+        onBlur={(evt) => validateField(evt.target.name)}
+        error={state.email.isValid === false}
+        helperText={state.email.isValid === false ? "Invalid email" : " "}
+        autoFocus
+      />
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        id="username"
+        label="Username"
+        name="username"
+        autoComplete="off"
+        onBlur={(evt) => validateField(evt.target.name)}
+        value={state.username.value}
+        error={state.username.isValid === false}
+        helperText={
+          state.username.isValid === false
+            ? "Only alphabet characters are allowed"
+            : " "
         }
-      }));
-      return isFieldValid;
-    }
-  };
-
-  validateUsername = () => {
-    const regex = /^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/;
-    if (this.state.username.isTouched) {
-      const isFieldValid = regex.test(this.state.username.value);
-      this.setState((prevState) => ({
-        errors: {
-          ...prevState.errors,
-          isUsernameValid: regex.test(this.state.username.value)
-        }
-      }));
-      return isFieldValid;
-    }
-  };
-
-  validatePassword = () => {
-    const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{6,})/;
-    if (this.state.password.isTouched) {
-      const isFieldValid = regex.test(this.state.password.value);
-      this.setState(
-        (prevState) => ({
-          errors: {
-            ...prevState.errors,
-            isPasswordValid: regex.test(this.state.password.value)
+      />
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        id="password"
+        name="password"
+        label="Password"
+        type="password"
+        autoComplete="off"
+        value={state.password.value}
+        onBlur={(evt) => {
+          validateField(evt.target.name);
+          if (state.confirmPassword.isTouched) {
+            validateConfirmPassword();
           }
-        }),
-        () => {
-          if (this.state.confirmPassword.value) {
-            this.validateConfirmPassword();
-          }
+        }}
+        error={state.password.isValid === false}
+        helperText={
+          state.password.isValid === false
+            ? "Minimum 6 characters, at least one letter and one number"
+            : " "
         }
-      );
-      return isFieldValid;
-    }
-  };
-
-  validateConfirmPassword = () => {
-    if (
-      this.state.confirmPassword.isTouched &&
-      this.state.password.value &&
-      this.state.confirmPassword.value
-    ) {
-      const isFieldValid =
-        this.state.confirmPassword.value === this.state.password.value;
-      this.setState((prevState) => ({
-        errors: {
-          ...prevState.errors,
-          isConfirmPasswordValid: isFieldValid
+      />
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        label="Confirm Password"
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        autoComplete="off"
+        value={state.confirmPassword.value}
+        onBlur={validateConfirmPassword}
+        error={state.confirmPassword.isValid === false}
+        helperText={
+          state.confirmPassword.isValid === false
+            ? "Inconsistent password"
+            : " "
         }
-      }));
-      return isFieldValid;
-    }
-  };
-
-  validateForm = () => {
-    const {
-      validateEmail,
-      validateUsername,
-      validatePassword,
-      validateConfirmPassword
-    } = this;
-    return (
-      validateEmail() &&
-      validateUsername() &&
-      validatePassword() &&
-      validateConfirmPassword()
-    );
-  };
-
-  render() {
-    const { errors, open, err } = this.state;
-    return (
-      <>
-        <Dialog onClose={this.handleClose} open={open}>
-          <DialogTitle id="dialog-title" onClose={this.handleClose}>
-            Response Error
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>{err}</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={this.handleClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Box
-          method="post"
-          component="form"
-          noValidate
-          onChange={this.handleInputChange}
-        >
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            value={this.state.email.value}
-            onBlur={this.validateEmail}
-            error={errors.isEmailValid === false}
-            helperText={errors.isEmailValid === false ? "Invalid email" : " "}
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            onBlur={this.validateUsername}
-            value={this.state.username.value}
-            error={errors.isUsernameValid === false}
-            helperText={
-              errors.isUsernameValid === false
-                ? "Only alphabet characters are allowed"
-                : " "
-            }
-          />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            value={this.state.password.value}
-            onBlur={this.validatePassword}
-            error={errors.isPasswordValid === false}
-            helperText={
-              errors.isPasswordValid === false
-                ? "Minimum 6 characters, at least one letter and one number"
-                : " "
-            }
-            type="password"
-            id="password"
-            autoComplete="new-password"
-          />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            name="confirmPassword"
-            autoComplete="current-password"
-            value={this.state.confirmPassword.value}
-            onBlur={this.validateConfirmPassword}
-            error={errors.isConfirmPasswordValid === false}
-            helperText={
-              errors.isConfirmPasswordValid === false
-                ? "Inconsistent password"
-                : " "
-            }
-            label="Confirm Password"
-            type="password"
-            id="confirmPassword"
-          />
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={this.signup}
-            disabled={Object.values(errors).some(
-              (isFieldValid) => isFieldValid !== true
-            )}
-            sx={{
-              mt: 1
-            }}
-          >
-            Signup
-          </Button>
-        </Box>
-      </>
-    );
-  }
-}
+      />
+      <Button
+        type="button"
+        size="small"
+        fullWidth
+        variant="contained"
+        color="primary"
+        onClick={signup}
+        disabled={!isFormValid()}
+        sx={{
+          mt: 1
+        }}
+      >
+        Signup
+      </Button>
+    </Box>
+  );
+};
 
 export default Signup;

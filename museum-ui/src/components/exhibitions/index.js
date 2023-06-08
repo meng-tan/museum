@@ -2,75 +2,105 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, CardHeader, Container, Grid } from "@mui/material";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Pagination from "@mui/material/Pagination";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import {
+  Typography,
+  Box,
+  CardHeader,
+  Container,
+  Grid,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Pagination
+} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import { debounce } from "lodash";
+import utc from "dayjs/plugin/utc";
 
 import axiosInstance from "@service/axiosInstance";
-import ExhibitionService from "@service/ExhibitionService";
 import urlConfig from "@service/urlConfig";
 
-import bg4 from "@img/archer.jpg";
+dayjs.extend(utc);
 
-class ExhibitionContainer extends Component {
+class Exhibitions extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       date: null,
+      errorMessage: " ",
       page: 1,
       totalPage: 1,
-      keywords: "",
       exhibitions: []
     };
-    this.exhibitionService = ExhibitionService.getInstance();
   }
 
   componentDidMount() {
-    this.findByDate(this.state.date, this.state.page);
-    axiosInstance
-      .get(urlConfig.listAll, {
-        params: {
-          ID: 12345
-        }
-      })
-      .then((data) =>
-        this.setState({
-          exhibitions: data
-          // totalPage:data.totalPage
-        })
-      )
-      .catch((err) => console.log("err:", err));
+    this.listByPage(this.state.page);
   }
 
-  findByDate = (date, page) => {
-    this.exhibitionService.findByDate(date, page).then((res) => {
-      this.setState({
-        exhibitions: res.exhibitions,
-        totalPage: res.totalPage
+  listByPage = (page) => {
+    axiosInstance
+      .get(urlConfig.listExhibitions, {
+        params: {
+          page
+        }
+      })
+      .then(({ exhibitions, totalPage }) => {
+        this.setState({
+          exhibitions,
+          totalPage
+        });
       });
-    });
   };
 
-  changeDate = (date) => {
-    this.setState(
-      {
+  validateDate = (newError) => {
+    let errorMessage;
+    switch (newError) {
+      case "disablePast":
+        errorMessage = "Please select a future date";
+        break;
+      case "invalidDate":
+        errorMessage = "Your date is not valid";
+        break;
+      default:
+        errorMessage = " ";
+    }
+    this.setState({ errorMessage });
+  };
+
+  changeDate = (date, context) => {
+    if (date && context.validationError == null) {
+      this.setState({
         date: dayjs(date).format("YYYY-MM-DD"),
         page: 1
-      },
-      () => {
-        this.findByDate(this.state.date, this.state.page);
-      }
-    );
+      });
+      this.findByDate(date, 1);
+    } else if (date === null) {
+      this.setState({
+        date,
+        page: 1
+      });
+      this.listByPage(1);
+    }
+  };
+
+  findByDate = (date, page) => {
+    axiosInstance
+      .get(urlConfig.listExhibitions, {
+        params: {
+          page,
+          date: dayjs(date).utc().format("YYYY-MM-DD")
+        }
+      })
+      .then(({ exhibitions, totalPage }) => {
+        this.setState({
+          exhibitions,
+          totalPage
+        });
+      });
   };
 
   handlePageChange = (event, value) => {
@@ -79,60 +109,23 @@ class ExhibitionContainer extends Component {
         page: value
       },
       () => {
-        if (this.state.keywords.trim().length) {
-          this.findByKeywords(this.state.keywords.trim(), this.state.page);
-        } else {
-          this.findByDate(this.state.date, this.state.page);
-        }
+        console.log(this.state);
+        document.documentElement.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth"
+        });
       }
     );
-  };
-
-  findByKeywords = debounce((keywords, page) => {
-    console.log("hit");
-
-    this.exhibitionService.findByKeywords(keywords, page).then((res) => {
-      this.setState({
-        exhibitions: res.exhibitions,
-        totalPage: res.totalPage
-      });
-    });
-  }, 300);
-
-  inputChange = (e) => {
-    this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        if (this.state.keywords.trim().length) {
-          this.setState(
-            {
-              page: 1
-            },
-            () => {
-              this.findByKeywords(this.state.keywords.trim(), this.state.page);
-            }
-          );
-        } else {
-          this.setState(
-            {
-              page: 1
-            },
-            () => {
-              this.findByDate(
-                dayjs(new Date()).format("YYYY-MM-DD"),
-                this.state.page
-              );
-            }
-          );
-        }
-      }
-    );
+    if (this.state.date) {
+      this.findByDate(this.state.date, value);
+    } else {
+      this.listByPage(value);
+    }
   };
 
   render() {
-    const { exhibitions, page, totalPage } = this.state;
+    const { date, errorMessage, exhibitions, page, totalPage } = this.state;
     return (
       <Box bgcolor="beige" minHeight="inherit">
         <Container
@@ -145,43 +138,24 @@ class ExhibitionContainer extends Component {
             }
           }}
         >
-          <Grid
-            container
-            spacing={{
-              xs: 1
+          <DatePicker
+            value={date}
+            disablePast={true}
+            onError={this.validateDate}
+            slotProps={{
+              textField: {
+                helperText: errorMessage
+              }
             }}
-          >
-            <Grid item xs={12} md={5}>
-              <DatePicker
-                value={this.state.date}
-                onChange={this.changeDate}
-                label="Filter by Month"
-                views={["year", "month"]}
-                openTo="month"
-                disablePast
-                // disabled
-                format="MM-YYYY"
-                sx={{
-                  width: "100%"
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={2} alignSelf="center">
-              <Typography variant="overline" align="center" component="p">
-                or
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={5}>
-              <TextField
-                label="Search by Keywords"
-                variant="outlined"
-                fullWidth
-                name="keywords"
-                value={this.state.keywords}
-                onChange={this.inputChange}
-              />
-            </Grid>
-          </Grid>
+            onChange={this.changeDate}
+            label="Filter by Month"
+            views={["year", "month"]}
+            openTo="month"
+            format="YYYY-MM"
+            sx={{
+              width: "100%"
+            }}
+          />
 
           <Box
             sx={{
@@ -191,6 +165,7 @@ class ExhibitionContainer extends Component {
               }
             }}
           >
+            {/* better to use skeleton */}
             {exhibitions.length ? (
               <>
                 {exhibitions.map((exhibition) => (
@@ -214,8 +189,7 @@ class ExhibitionContainer extends Component {
                         <CardMedia
                           component="img"
                           height="100%"
-                          image={bg4}
-                          // image={exhibition.imgUrl}
+                          image={require(`../../assets${exhibition.imgUrl}`)}
                           alt={exhibition.title}
                         />
                       </Grid>
@@ -224,11 +198,13 @@ class ExhibitionContainer extends Component {
                         <CardHeader title={exhibition.title} />
                         <CardContent>
                           <Typography variant="subtitle1">
-                            {`Duration: ${dayjs(exhibition.dateFrom).format(
-                              "YYYY/MM/DD"
-                            )} ~ ${dayjs(exhibition.dateTo).format(
-                              "YYYY/MM/DD"
-                            )}`}
+                            {`Duration: ${dayjs
+                              .utc(exhibition.dateFrom)
+                              .local()
+                              .format("YYYY/MM/DD")} ~ ${dayjs
+                              .utc(exhibition.dateTo)
+                              .local()
+                              .format("YYYY/MM/DD")}`}
                           </Typography>
                           <Typography variant="subtitle1">
                             {`Location: ${exhibition.location}`}
@@ -237,14 +213,14 @@ class ExhibitionContainer extends Component {
                       </Grid>
 
                       <Grid item xs={12} md={2}>
-                        <CardActions>
+                        <CardActions sx={{ py: 2 }}>
                           <Button
-                            disabled={
-                              dayjs(new Date()) > dayjs(exhibition.dateTo)
-                            }
+                            disabled={dayjs().isAfter(
+                              dayjs.utc(exhibition.dateTo).local()
+                            )}
                             endIcon={<ArrowForwardIcon />}
                             component={Link}
-                            to={`/exhibitions/${exhibition._id}`}
+                            to={`/exhibitions/${exhibition._id}/tickets`}
                             variant="contained"
                             sx={{
                               m: "auto"
@@ -280,4 +256,4 @@ class ExhibitionContainer extends Component {
   }
 }
 
-export default ExhibitionContainer;
+export default Exhibitions;

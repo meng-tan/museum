@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 
 export default function Confirm(props) {
@@ -8,9 +9,14 @@ export default function Confirm(props) {
       <Typography variant="h5" gutterBottom>
         Thank you for your order.
       </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        Your order number is #
-        <Link to="/orders">{props.exhibitionOrder._id}</Link>.
+      <Typography variant="subtitle1" gutterBottom>
+        Your order number is{" "}
+        <Chip
+          label={` #${props.exhibitionOrder?._id}`}
+          component={Link}
+          to="/orders"
+          clickable
+        />
       </Typography>
     </>
   );

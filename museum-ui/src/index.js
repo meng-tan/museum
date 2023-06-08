@@ -1,6 +1,8 @@
-import { StrictMode } from "react";
-import { BrowserRouter } from "react-router-dom";
+// import { StrictMode } from "react";
+import { Provider } from "react-redux";
 
+import { deepPurple } from "@mui/material/colors";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createRoot } from "react-dom/client";
@@ -8,21 +10,42 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.less";
 import * as serviceWorker from "./serviceWorker";
+import store from "./store";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: deepPurple[500]
+    }
+  },
+  typography: {
+    fontFamily: ["cursive", "Georgia", "Roboto", "sans-serif"].join(",")
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        // root: {
+        // Some CSS
+        // }
+      }
+    }
+  }
+});
 
 const root = createRoot(document.getElementById("root"));
 root.render(
-  <StrictMode>
+  // <StrictMode>
+  <Provider store={store}>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <BrowserRouter>
+      <ThemeProvider theme={theme}>
         <App />
-      </BrowserRouter>
+      </ThemeProvider>
     </LocalizationProvider>
-  </StrictMode>
+  </Provider>
+  // </StrictMode>
 );
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

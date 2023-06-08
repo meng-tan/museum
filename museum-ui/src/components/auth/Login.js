@@ -1,178 +1,125 @@
-import { Component } from "react";
+import { useReducer } from "react";
+import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
 
-import { Box } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { Box, Button, TextField } from "@mui/material";
 
-import UserService from "@service/UserService";
+import axiosInstance from "@service/axiosInstance";
+import urlConfig from "@service/urlConfig";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: {
-        value: "",
-        isTouched: false
-      },
-      password: {
-        value: "",
-        isTouched: false
-      },
-      errors: {
-        isEmailValid: null,
-        isPasswordValid: null
-      },
-      open: false,
-      err: ""
-    };
-    this.userService = UserService.getInstance();
-  }
+import { PATTERN } from "@tools/constant";
 
-  login = () => {
-    if (!this.validateEmail() || !this.validatePassword()) {
+import { reducer } from "./Signup";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const [onSuccess] = useOutletContext();
+  const { state: locationState } = useLocation();
+
+  const [state, dispatch] = useReducer(reducer, {
+    email: {
+      value: "",
+      isTouched: false,
+      regex: PATTERN.EMAIL,
+      isValid: null
+    },
+    password: {
+      value: "",
+      isTouched: false,
+      regex: PATTERN.PASSWORD,
+      isValid: null
+    }
+  });
+
+  const handleInputChange = (evt) => {
+    if (!state[evt.target.name].isTouched && !evt.target.value) {
       return;
     }
-    this.userService
-      .login({
-        email: this.state.email.value,
-        password: this.state.password.value
+    dispatch({
+      type: "input_change",
+      evt
+    });
+  };
+
+  const validateField = (field) => {
+    if (state[field].isTouched) {
+      const isFieldValid = state[field].regex.test(state[field].value);
+      dispatch({ type: "validate_field", field, isFieldValid });
+    }
+  };
+
+  const login = () => {
+    if (!state.email.isValid || !state.password.isValid) {
+      return;
+    }
+
+    axiosInstance
+      .post(urlConfig.login, {
+        email: state.email.value,
+        password: state.password.value
       })
       .then((res) => {
-        console.log(res);
-        if (res.err) {
-          console.log("res.err:" + res.err);
-          this.setState({
-            err: res.err,
-            open: true
-          });
+        onSuccess(res);
+        if (locationState) {
+          navigate(locationState.from.pathname, { replace: true });
         } else {
-          this.props.history.push("/exhibitions");
+          navigate("/dashboard");
         }
       });
   };
 
-  handleClose = () => {
-    this.setState({
-      open: false
-    });
-  };
-
-  handleInputChange = (evt) => {
-    if (!this.state[evt.target.name].isTouched && !evt.target.value) {
-      return;
-    }
-    this.setState((prevState) => ({
-      ...prevState,
-      [evt.target.name]: {
-        isTouched: true,
-        value: evt.target.value
-      }
-    }));
-  };
-
-  validateEmail = () => {
-    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if (this.state.email.isTouched) {
-      const isFieldValid = regex.test(this.state.email.value);
-      this.setState((prevState) => ({
-        errors: {
-          ...prevState.errors,
-          isEmailValid: isFieldValid
+  return (
+    <Box method="post" component="form" onChange={handleInputChange} noValidate>
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        id="email"
+        label="Email"
+        name="email"
+        autoComplete="email"
+        value={state.email.value}
+        onBlur={(evt) => validateField(evt.target.name)}
+        error={state.email.isValid === false}
+        helperText={state.email.isValid === false ? "Invalid email" : " "}
+        autoFocus
+      />
+      <TextField
+        variant="outlined"
+        margin="dense"
+        size="small"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="off"
+        value={state.password.value}
+        onBlur={(evt) => validateField(evt.target.name)}
+        error={state.password.isValid === false}
+        helperText={
+          state.password.isValid === false
+            ? "Minimum 6 characters, at least one letter and one number"
+            : " "
         }
-      }));
-      return isFieldValid;
-    }
-  };
-
-  validatePassword = () => {
-    const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{6,})/;
-    if (this.state.password.isTouched) {
-      const isFieldValid = regex.test(this.state.password.value);
-      this.setState((prevState) => ({
-        errors: {
-          ...prevState.errors,
-          isPasswordValid: regex.test(this.state.password.value)
+      />
+      <Button
+        type="button"
+        size="small"
+        fullWidth
+        variant="contained"
+        color="primary"
+        onClick={login}
+        disabled={
+          !(state.email.isValid === true && state.password.isValid === true)
         }
-      }));
-      return isFieldValid;
-    }
-  };
-
-  render() {
-    const { errors, open, err } = this.state;
-    console.log("this.props.history:", this.props.history);
-    return (
-      <>
-        <Dialog onClose={this.handleClose} open={open}>
-          <DialogTitle id="dialog-title" onClose={this.handleClose}>
-            Response Error
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>{err}</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={this.handleClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Box method="post" onChange={this.handleInputChange} noValidate>
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            value={this.state.email.value}
-            onBlur={this.validateEmail}
-            error={errors.isEmailValid === false}
-            helperText={errors.isEmailValid === false ? "Invalid email" : " "}
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            value={this.state.password.value}
-            onBlur={this.validatePassword}
-            error={errors.isPasswordValid === false}
-            helperText={
-              errors.isPasswordValid === false
-                ? "Minimum 6 characters, at least one letter and one number"
-                : " "
-            }
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={this.login}
-            disabled={
-              !(errors.isEmailValid === true && errors.isPasswordValid === true)
-            }
-          >
-            Login
-          </Button>
-        </Box>
-      </>
-    );
-  }
-}
+      >
+        Login
+      </Button>
+    </Box>
+  );
+};
 
 export default Login;

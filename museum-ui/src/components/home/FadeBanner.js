@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { keyframes } from "@emotion/react";
-import { Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
+import { Typography, Button, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const fadeInLeft = keyframes`
@@ -60,6 +58,7 @@ const FadeBanner = () => {
         threshold: 0.5
       }
     );
+
     observer.observe(ele);
 
     return () => observer.unobserve(ele);

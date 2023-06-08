@@ -94,10 +94,7 @@ export default class UserService {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("user get payments");
-        console.log(data);
         this.updateToken(data.token);
-
         return data;
       });
   };
