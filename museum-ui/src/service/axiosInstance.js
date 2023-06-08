@@ -37,7 +37,6 @@ axiosInstance.interceptors.response.use(
 
     // update token
     if (response.headers.token) {
-      console.log("update token");
       sessionStorage.setItem("token", response.headers.token);
     }
     // return response;
