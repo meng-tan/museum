@@ -16,6 +16,7 @@ const BackgroundContainer = ({ bgImg, nextAnchor, children, sx, ...rest }) => {
       component="section"
       sx={{
         height: "100vh",
+        minHeight: 500,
         position: "relative",
         backgroundAttachment: "fixed",
         backgroundImage: bgImg && `url(${bgImg})`,

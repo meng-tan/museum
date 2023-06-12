@@ -20,11 +20,13 @@ const config = {
     assetModuleFilename: "[name][ext]"
   },
   resolve: {
-    extensions: [".js", "jsx", ".ts", "tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
     alias: {
       "@service": path.resolve(__dirname, "./src/service"),
+      "@features": path.resolve(__dirname, "./src/features"),
+      "@tools": path.resolve(__dirname, "./src/tools"),
       "@img": path.resolve(__dirname, "./src/assets/img"),
-      "@tools": path.resolve(__dirname, "./src/tools")
+      "@*": path.resolve(__dirname, "./src/*")
     }
   },
   devServer: {

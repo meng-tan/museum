@@ -1,18 +1,45 @@
 import { useDispatch } from "react-redux";
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
 
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
+import {
+  Box,
+  Divider,
+  Chip,
+  Container,
+  Paper,
+  Typography
+} from "@mui/material";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
-import { thunkedLogIn } from "../../features/userSlice";
+import { openAlert } from "@features/alertSlice";
+import { thunkedLogIn } from "@features/userSlice";
+import axiosInstance from "@service/axiosInstance";
+import urlConfig from "@service/urlConfig";
+
+import { config } from "@config";
 
 function AuthPageLayout() {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const isSignupPage = location.pathname.includes("signup");
 
-  const onSuccess = (res) => dispatch(thunkedLogIn(res));
+  const navigate = useNavigate();
+  const { pathname, state } = useLocation();
+
+  const isSignupPage = pathname.includes("signup");
+
+  const onSuccess = (res) => {
+    dispatch(thunkedLogIn(res));
+    navigate(state?.from?.pathname || "/dashboard", { replace: true });
+  };
+
+  const handleCredentialResponse = (credentialResponse) => {
+    axiosInstance
+      .post(urlConfig.googleAuth, {
+        idToken: credentialResponse.credential
+      })
+      .then((res) => {
+        onSuccess(res);
+      });
+  };
 
   return (
     <Container
@@ -33,24 +60,57 @@ function AuthPageLayout() {
         <Typography variant="h5" textAlign="center" gutterBottom>
           {isSignupPage ? "Sign Up" : "Log In"}
         </Typography>
-        <Outlet context={[onSuccess]} />
-        <Typography
-          align="right"
-          variant="body2"
-          sx={{
-            display: "block",
-            my: 2,
-            color: (theme) => `${theme.palette.primary.light} !important`
-          }}
-          component={Link}
-          to={isSignupPage ? "/login" : "/signup"}
-        >
-          {isSignupPage
-            ? "Already have an account? Login"
-            : "Don't have an account? Sign Up"}
-        </Typography>
 
-        {/* <GoogleAuth /> */}
+        <Outlet context={[onSuccess]} />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            my: 2
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              color: (theme) => `${theme.palette.primary.light} !important`
+            }}
+            component={Link}
+            to={isSignupPage ? "/login" : "/signup"}
+          >
+            {isSignupPage
+              ? "Already have an account? Login"
+              : "Don't have an account? Sign Up"}
+          </Typography>
+        </Box>
+
+        <GoogleOAuthProvider clientId={config.oauthClientId}>
+          <Divider sx={{ mb: 2 }}>
+            <Chip label="OR" />
+          </Divider>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <GoogleLogin
+              theme="outline"
+              text="continue_with"
+              shape="pill"
+              onSuccess={handleCredentialResponse}
+              onError={() => {
+                dispatch(
+                  openAlert({
+                    severity: "error",
+                    err: "Google Login failed, please try again"
+                  })
+                );
+              }}
+            />
+          </Box>
+        </GoogleOAuthProvider>
       </Paper>
     </Container>
   );

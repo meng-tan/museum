@@ -79,6 +79,24 @@ export default function Home() {
   const homeRef = useRef();
   // const navigate = useNavigate();
 
+  useEffect(() => {
+    const scrollToTopBtn = document.getElementById("top");
+    const rootElement = document.documentElement;
+    const handleTopBtn = () => {
+      // const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
+      if (rootElement.scrollTop / rootElement.clientHeight > 1) {
+        scrollToTopBtn.classList.add("show");
+      } else {
+        scrollToTopBtn.classList.remove("show");
+      }
+    };
+    document.addEventListener("scroll", handleTopBtn);
+
+    return () => {
+      document.removeEventListener("scroll", handleTopBtn);
+    };
+  }, []);
+
   const handleHashSegment = () => {
     const homeElement = homeRef.current;
     const rootElement = document.documentElement;
@@ -104,21 +122,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const scrollToTopBtn = document.getElementById("top");
-    const rootElement = document.documentElement;
-    const handleTopBtn = () => {
-      // const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
-      if (rootElement.scrollTop / rootElement.clientHeight > 1) {
-        scrollToTopBtn.classList.add("show");
-      } else {
-        scrollToTopBtn.classList.remove("show");
-      }
-    };
-    document.addEventListener("scroll", handleTopBtn);
     const debouncedHandleHashSegment = debounce(handleHashSegment, 500);
     document.addEventListener("scroll", debouncedHandleHashSegment);
     return () => {
-      document.removeEventListener("scroll", handleTopBtn);
       document.removeEventListener("scroll", debouncedHandleHashSegment);
     };
   }, []);
@@ -136,7 +142,7 @@ export default function Home() {
       <BackgroundContainer bgImg={ink} id="bg3" nextAnchor={"#bg4"}>
         <Box
           sx={{
-            height: "100vh",
+            height: "100%",
             p: "0 2vw",
             display: "flex",
             flexDirection: "column",

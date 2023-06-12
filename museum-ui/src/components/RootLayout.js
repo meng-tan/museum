@@ -4,7 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import { Snackbar, Alert } from "@mui/material";
 
-import { closeAlert, selectAlert } from "../features/alertSlice";
+import { closeAlert, selectAlert } from "@features/alertSlice";
 
 import Footer from "./Footer";
 import Header from "./Header";

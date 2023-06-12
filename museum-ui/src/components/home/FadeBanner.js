@@ -92,6 +92,7 @@ const FadeBanner = () => {
         sx={{
           mt: 2,
           mb: 1,
+          fontSize: "2.5rem",
           animation: isVisible && `${fadeInLeft} 1s ease`,
           color: (theme) => theme.palette.primary.main,
           textShadow: (theme) =>

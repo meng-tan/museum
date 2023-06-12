@@ -109,7 +109,6 @@ class Exhibitions extends Component {
         page: value
       },
       () => {
-        console.log(this.state);
         document.documentElement.scrollTo({
           top: 0,
           left: 0,

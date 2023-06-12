@@ -28,9 +28,9 @@ export default function Footer() {
           <Grid item xs={4}>
             <Typography variant="overline">Address</Typography>
             <Typography component="address">
-              1000 Fifth Avenue
+              1 Tech Valley Dr
               <br />
-              Boston, MA 02114
+              Westford, MA 01886
             </Typography>
           </Grid>
           <Grid item xs={4}>

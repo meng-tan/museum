@@ -1,11 +1,10 @@
 import { useReducer } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import { Box, Button, TextField } from "@mui/material";
 
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
-
 import { PATTERN } from "@tools/constant";
 
 export function reducer(state, action) {
@@ -34,7 +33,6 @@ export function reducer(state, action) {
 }
 
 const Signup = () => {
-  const navigate = useNavigate();
   const [onSuccess] = useOutletContext();
 
   const [state, dispatch] = useReducer(reducer, {
@@ -108,7 +106,6 @@ const Signup = () => {
       })
       .then((res) => {
         onSuccess(res);
-        navigate("/dashboard");
       });
   };
 

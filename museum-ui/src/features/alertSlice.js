@@ -7,7 +7,6 @@ const initialState = {
 export const selectAlert = (state) => state.alert;
 
 export const openAlert = (payload) => {
-  console.log("alert payload:", payload);
   return {
     type: "alert/open",
     payload

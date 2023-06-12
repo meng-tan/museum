@@ -1,19 +1,16 @@
 import { useReducer } from "react";
-import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import { Box, Button, TextField } from "@mui/material";
 
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
-
 import { PATTERN } from "@tools/constant";
 
 import { reducer } from "./Signup";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [onSuccess] = useOutletContext();
-  const { state: locationState } = useLocation();
 
   const [state, dispatch] = useReducer(reducer, {
     email: {
@@ -59,11 +56,6 @@ const Login = () => {
       })
       .then((res) => {
         onSuccess(res);
-        if (locationState) {
-          navigate(locationState.from.pathname, { replace: true });
-        } else {
-          navigate("/dashboard");
-        }
       });
   };
 

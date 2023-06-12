@@ -2,12 +2,11 @@ import { useState, useLayoutEffect } from "react";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, IconButton } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Box, IconButton, Typography, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
 
 import { useDeviceDimensions } from "@tools/func";
+
 const imgArr = [
   {
     img: "img/slider/online.jpg",
@@ -150,7 +149,7 @@ export default function Carousel() {
   return (
     <Box
       sx={{
-        height: "45vh",
+        height: "45%",
         width: "100%",
         overflow: "hidden",
         position: "relative"

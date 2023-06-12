@@ -15,7 +15,7 @@ import {
   Avatar
 } from "@mui/material";
 
-import { selectUser, thunkedLogout } from "../features/userSlice";
+import { selectUser, thunkedLogout } from "@features/userSlice";
 
 const AuthButton = () => {
   const navigate = useNavigate();

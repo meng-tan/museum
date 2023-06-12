@@ -28,8 +28,8 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 
-import { openAlert } from "../../features/alertSlice";
-import { selectUser } from "../../features/userSlice";
+import { openAlert } from "@features/alertSlice";
+import { selectUser } from "@features/userSlice";
 
 export const Tickets = () => {
   const navigate = useNavigate();

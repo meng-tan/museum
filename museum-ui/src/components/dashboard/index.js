@@ -8,9 +8,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
+import { selectUser } from "@features/userSlice";
 import { withAuth } from "@tools/func";
-
-import { selectUser } from "../../features/userSlice";
 
 const Dashboard = () => {
   const user = useSelector(selectUser);

@@ -59,7 +59,7 @@ function Slideshow({ slides, ...rest }) {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "100%",
         position: "relative"
       }}
       {...rest}

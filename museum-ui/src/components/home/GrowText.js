@@ -20,13 +20,13 @@ export default function GrowText() {
     <Typography
       component="div"
       sx={{
-        height: "100vh",
+        height: "100%",
         display: "flex",
         flexFlow: "column",
         justifyContent: "center",
         alignItems: "center",
         gap: "2rem",
-        fontSize: "2.5rem",
+        fontSize: "2rem",
         textTransform: "capitalize",
         color: (theme) => theme.palette.primary.contrastText
       }}
