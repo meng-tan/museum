@@ -1,15 +1,13 @@
-const env = process.env.NODE_ENV || "development";
 const port = process.env.PORT || "3000";
 
-const config = require("./config.js")[env];
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-
 const exhibitionRouter = require("./routes/exhibitionRouter");
 const userRouter = require("./routes/userRouter");
 
-mongoose.connect(config.url, { useNewUrlParser: true });
+const config = require("./config.js");
+const mongoose = require("mongoose");
+mongoose.connect(config.db_url, { useNewUrlParser: true });
 
 const app = express();
 

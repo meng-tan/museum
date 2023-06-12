@@ -1,11 +1,12 @@
 const express = require("express");
-const userRouter = express.Router();
 const userController = require("../controllers/userController");
 const auth = require("../services/auth");
 
+const userRouter = express.Router();
+
 userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
-userRouter.post("/google-login", userController.googleLogin);
+userRouter.post("/google-auth", userController.googleAuth);
 
 userRouter.get("/payments", auth.checkToken, userController.listPayments);
 userRouter.get(

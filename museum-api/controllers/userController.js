@@ -3,13 +3,11 @@ const Exhibition = require("../models/exhibition");
 const ExhibitionOrder = require("../models/exhibitionOrder");
 const Payment = require("../models/payment");
 
-const env = process.env.NODE_ENV || "development";
-const config = require("../config.js")[env];
-
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const auth = require("../services/auth");
 const nodemailer = require("nodemailer");
+
+const auth = require("../services/auth");
+const config = require("../config.js");
 
 const gmailAuth = {
   type: "oauth2",
@@ -23,73 +21,63 @@ exports.register = (req, res) => {
   const { email, username, password } = req.body;
   User.findOne({
     email
-  }).then((user) => {
-    if (user && user.googleId) {
-      res.status(409).json({ err: "Please login with Google" });
-    } else if (user) {
-      res.status(409).json({ err: "Email already in use" });
-    } else {
-      User.create({
-        username,
-        email,
-        password: bcrypt.hashSync(password, 10)
-      }).then((user) => {
-        res.set(
-          "token",
-          jwt.sign({ _id: user._id }, config.secret, {
-            expiresIn: "1h"
-          })
-        );
-        res.status(201).json({ username });
-      });
-    }
-  });
+  })
+    .then((user) => {
+      if (user && user.googleId) {
+        res.status(409).json({ err: "Please login with Google" });
+      } else if (user) {
+        res.status(409).json({ err: "Email already in use" });
+      } else {
+        User.create({
+          username,
+          email,
+          password: bcrypt.hashSync(password, 10)
+        }).then((user) => {
+          auth.setResToken(res, user);
+          res.status(201).json({ username });
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ err: err.message });
+    });
 };
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
   User.findOne({
     email
-  }).then((user) => {
-    if (!user) {
-      res.status(404).json({ err: "User not found" });
-    } else if (!bcrypt.compareSync(password, user.password)) {
-      res.status(401).json({ err: "Incorrect password" });
-    } else {
-      res.set(
-        "token",
-        jwt.sign({ _id: user._id }, config.secret, {
-          expiresIn: "1h"
-        })
-      );
-      res.status(200).json({ username: user.username });
-    }
-  });
+  })
+    .then((user) => {
+      if (!user) {
+        res.status(404).json({ err: "User not found" });
+      } else if (!bcrypt.compareSync(password, user.password)) {
+        res.status(401).json({ err: "Incorrect password" });
+      } else {
+        auth.setResToken(res, user);
+        res.status(200).json({ username: user.username });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ err: err.message });
+    });
 };
 
-exports.googleLogin = async (req, res) => {
+exports.googleAuth = async (req, res) => {
   try {
-    //verify google token
-    let idToken = req.headers["authorization"];
-    let user = await auth.getGoogleUser(idToken);
-
-    //find user, if a new user, save it
-    let returningUser = await User.findOne({ email: user.email }).exec();
-
-    if (!returningUser) {
-      let newUser = await User.create(user).exec();
-      const token = jwt.sign({ _id: newUser._id }, config.secret, {
-        expiresIn: "1h"
+    let payload = await auth.verifyCredential(req.body.idToken);
+    let user = await User.findOne({ email: payload.email }).exec();
+    if (!user) {
+      user = await User.create({
+        username: payload.name,
+        email: payload.email
       });
-      res.status(200).json({ token: token, username: newUser.username });
-    } else {
-      const token = jwt.sign({ _id: returningUser._id }, config.secret, {
-        expiresIn: "1h"
-      });
-      res.status(200).json({ token: token, username: returningUser.username });
     }
+    auth.setResToken(res, user);
+    res.status(200).json({ username: user.username });
   } catch (err) {
-    res.status(401).json({ err });
+    console.log(error);
+    res.status(401).json({ err: err.message });
   }
 };
 
@@ -239,5 +227,8 @@ exports.listExhibitionOrders = async (req, res) => {
     .limit(limit)
     .then((exhibitionOrders) => {
       res.status(200).json({ exhibitionOrders, totalPage });
+    })
+    .catch((err) => {
+      res.status(400).json({ err: err.message });
     });
 };
