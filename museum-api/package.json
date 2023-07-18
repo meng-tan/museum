@@ -16,7 +16,7 @@
     "googleapis": "^39.2.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.27.0",
-    "mongoose": "^5.7.12",
+    "mongoose": "^5.13.20",
     "nodemailer": "^6.4.2"
   },
   "devDependencies": {
