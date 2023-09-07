@@ -4,6 +4,8 @@ const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -15,8 +17,9 @@ const config = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    clean: true,
     publicPath: "/",
+    clean: true,
+    filename: "[name][contenthash].js",
     assetModuleFilename: "[name][ext]"
   },
   resolve: {
@@ -33,6 +36,7 @@ const config = {
     open: true,
     hot: true,
     host: "localhost",
+    compress: true,
     historyApiFallback: true
   },
   plugins: [
@@ -49,6 +53,7 @@ const config = {
     rules: [
       {
         test: /\.(js|jsx)$/i,
+        exclude: /node_modules/,
         loader: "babel-loader"
       },
       {
@@ -78,6 +83,7 @@ module.exports = () => {
   } else {
     config.mode = "development";
     config.devtool = "source-map";
+    config.plugins.push(new BundleAnalyzerPlugin());
   }
   return config;
 };
