@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
 import MuseumIcon from "@mui/icons-material/Museum";
 import {
   Typography,
@@ -12,10 +13,18 @@ import {
   IconButton,
   Container,
   AppBar,
-  Avatar
+  Avatar,
+  Box,
+  Drawer,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText
 } from "@mui/material";
 
 import { selectUser, thunkedLogout } from "@features/userSlice";
+import { APP } from "@tools/constant";
 
 const AuthButton = () => {
   const navigate = useNavigate();
@@ -83,7 +92,44 @@ const AuthButton = () => {
   );
 };
 
+const drawerWidth = 240;
+
+const pages = [
+  { title: "Exhibitions", link: "/exhibitions" },
+  { title: "Visit", link: "/visit" },
+  { title: "About", link: "/about" }
+];
+
 const Header = forwardRef((props, ref) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prevState) => !prevState);
+  };
+
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        {APP.NAME}
+      </Typography>
+
+      <Divider />
+      <List>
+        {pages.map((page) => (
+          <ListItem
+            key={page.title}
+            disablePadding
+            component={Link}
+            to={page.link}
+          >
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={page.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
   return (
     <AppBar {...props} ref={ref}>
       <Toolbar>
@@ -91,29 +137,65 @@ const Header = forwardRef((props, ref) => {
           <MuseumIcon />
         </IconButton>
 
-        {/* todo: could change into a drawer on small screen */}
-        <Container
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            columnGap: {
-              xs: 1,
-              sm: 2
-            },
-            textTransform: "uppercase"
-          }}
-        >
-          <Typography variant="subtitle2" component={Link} to="/exhibitions">
-            Exhibitions
-          </Typography>
-
-          <Typography variant="subtitle2" component={Link} to="/visit">
-            Visit
-          </Typography>
+        <Container>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{
+              display: {
+                md: "none"
+              }
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                md: "flex"
+              },
+              justifyContent: "center",
+              columnGap: {
+                xs: 1,
+                sm: 2
+              },
+              textTransform: "uppercase"
+            }}
+          >
+            {pages.map((page) => (
+              <Typography
+                variant="subtitle2"
+                component={Link}
+                to={page.link}
+                key={page.title}
+              >
+                {page.title}
+              </Typography>
+            ))}
+          </Box>
         </Container>
-
         <AuthButton />
       </Toolbar>
+
+      <Drawer
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth
+          }
+        }}
+      >
+        {drawer}
+      </Drawer>
     </AppBar>
   );
 });

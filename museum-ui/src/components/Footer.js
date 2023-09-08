@@ -3,6 +3,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
+import { APP } from "@tools/constant";
+
 export default function Footer() {
   return (
     <Box
@@ -54,7 +56,7 @@ export default function Footer() {
         </Grid>
       </Container>
       <Typography variant="body2" align="center">
-        &copy; {`2019 - ${new Date().getFullYear()} Museum`}
+        &copy; {`2019 - ${new Date().getFullYear()} ${APP.NAME}`}
       </Typography>
     </Box>
   );

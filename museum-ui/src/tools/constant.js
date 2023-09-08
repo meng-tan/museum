@@ -7,3 +7,7 @@ export const PATTERN = {
   EXP_DATE: /^(20\d{2})-(0?[1-9]|1[0-2])$/,
   CVV: /^[0-9]{3}$/
 };
+
+export const APP = {
+  NAME: "Timeless Museum"
+};
