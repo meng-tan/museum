@@ -3,47 +3,41 @@ const Exhibition = require("../models/exhibition");
 exports.list = async (req, res) => {
   let page = req.query.page || 1;
   let date = req.query.date;
+
   const filter = date
     ? { $and: [{ dateFrom: { $lte: date } }, { dateTo: { $gte: date } }] }
     : {};
 
-  let count;
-  if (date) {
-    count = await Exhibition.find(filter).countDocuments();
-  } else {
-    count = await Exhibition.find().estimatedDocumentCount();
-  }
-  let limit = 3;
-  let totalPage = Math.ceil(count / limit);
+  try {
+    let count;
+    if (date) {
+      count = await Exhibition.find(filter).countDocuments();
+    } else {
+      count = await Exhibition.find().estimatedDocumentCount();
+    }
 
-  Exhibition.find(filter, null, {
-    skip: (page - 1) * limit,
-    limit
-  })
-    .then((exhibitions) => res.status(200).json({ exhibitions, totalPage }))
-    .catch((err) => {
-      res.status(400).json({ err: err.message });
-    });
+    let limit = 3;
+    let totalPage = Math.ceil(count / limit);
+    const exhibitions = await Exhibition.find(filter, null, {
+      skip: (page - 1) * limit,
+      limit
+    }).exec();
+    res.status(200).json({ exhibitions, totalPage });
+  } catch (error) {
+    res.status(400).json({ err: error.message });
+  }
 };
 
 exports.findById = (req, res) => {
   Exhibition.findById(req.params.id)
-    .then((exhibition) => {
-      res.status(200).json(exhibition);
-    })
-    .catch((err) => {
-      res.status(400).json({ err: err.message });
-    });
+    .then((exhibition) => res.status(200).json(exhibition))
+    .catch((err) => res.status(400).json({ err: err.message }));
 };
 
 exports.insertTestData = (req, res) => {
   Exhibition.create(req.body)
-    .then((exhibition) => {
-      res.status(201).json(exhibition);
-    })
-    .catch((err) => {
-      res.status(400).json({ err: err.message });
-    });
+    .then((exhibition) => res.status(201).json(exhibition))
+    .catch((err) => res.status(400).json({ err: err.message }));
 };
 
 // exports.findByKeywords = async (req, res) => {

@@ -1,53 +1,49 @@
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const { OAuth2Client } = require("google-auth-library");
+
 const User = require("../models/user");
 const Exhibition = require("../models/exhibition");
 const ExhibitionOrder = require("../models/exhibitionOrder");
 const Payment = require("../models/payment");
 
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-
 const auth = require("../services/auth");
 const config = require("../config.js");
 
-const gmailAuth = {
-  type: "oauth2",
-  user: "tanmeng.job@gmail.com",
-  clientId: config.gmail_client_id,
-  clientSecret: config.gmail_client_secret,
-  refreshToken: config.gmail_refresh_token
-};
+const client = new OAuth2Client(
+  config.gmail_client_id,
+  config.gmail_client_secret,
+  config.gmail_redirect_uri
+);
+client.setCredentials({ refresh_token: config.gmail_refresh_token });
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   const { email, username, password } = req.body;
-  User.findOne({
-    email
-  })
-    .then((user) => {
-      if (user && user.googleId) {
-        res.status(409).json({ err: "Please login with Google" });
-      } else if (user) {
-        res.status(409).json({ err: "Email already in use" });
-      } else {
-        User.create({
-          username,
-          email,
-          password: bcrypt.hashSync(password, 10)
-        }).then((user) => {
-          auth.setResToken(res, user);
-          res.status(201).json({ username });
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ err: err.message });
-    });
+
+  try {
+    let user = await User.findOne({ email }).exec();
+
+    if (user) {
+      res.status(409).json({
+        err: user.googleId ? "Please login with Google" : "Email already in use"
+      });
+    } else {
+      user = await User.create({
+        username,
+        email,
+        password: bcrypt.hashSync(password, 10)
+      });
+      auth.setResToken(res, user);
+      res.status(201).json({ username });
+    }
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
 };
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
-  User.findOne({
-    email
-  })
+  User.findOne({ email })
     .then((user) => {
       if (!user) {
         res.status(404).json({ err: "User not found" });
@@ -76,7 +72,6 @@ exports.googleAuth = async (req, res) => {
     auth.setResToken(res, user);
     res.status(200).json({ username: user.username });
   } catch (err) {
-    console.log(error);
     res.status(401).json({ err: err.message });
   }
 };
@@ -105,17 +100,18 @@ exports.findPaymentById = (req, res) => {
     });
 };
 
-const checkPayment = async (userId, order) => {
-  //authenticate one's payment
+const checkOrAddPayment = async (userId, order) => {
   if (order.paymentId) {
+    //authenticate one's payment
     let payment = await Payment.findById(order.paymentId).exec();
     if (payment.userId != userId) {
-      throw new Error("invalid Payment");
+      throw new Error("Invalid Payment");
     }
   } else if (order.payment) {
     //save new payment
     order.payment.userId = userId;
-    let payment = await Payment.create(order.payment);
+    const payment = await Payment.create(order.payment);
+    //updated order, with paymentId
     order.paymentId = payment._id;
   } else {
     throw new Error("No Payment Infomation");
@@ -123,94 +119,94 @@ const checkPayment = async (userId, order) => {
   return order;
 };
 
-const checkTicketStock = async (exhibitionId, ticketsToBuy) => {
-  let exhibition = await Exhibition.findById(exhibitionId).exec();
-  let ticketsInStock = exhibition.tickets;
-  let outOfStockTypes = Object.keys(ticketsToBuy).filter(
+const checkStockAndCalc = async (exhibitionId, ticketsToBuy) => {
+  const exhibition = await Exhibition.findById(exhibitionId).exec();
+  const { tickets: ticketsInStock } = exhibition;
+
+  const outOfStockTypes = Object.keys(ticketsToBuy).filter(
     (key) => ticketsInStock[key].stock < ticketsToBuy[key].amount
   );
   if (outOfStockTypes.length) {
-    throw new Error("out of stock");
+    throw new Error(`out of stock types: ${Object.keys(outOfStockTypes)}`);
   } else {
+    let total = 0;
+    for (let key of Object.keys(ticketsInStock)) {
+      if (ticketsToBuy.hasOwnProperty(key)) {
+        ticketsInStock[key].stock -= ticketsToBuy[key].amount;
+        total += ticketsInStock[key].price * ticketsToBuy[key].amount;
+      }
+    }
     //update stock
-    Object.keys(ticketsInStock).map(
-      (key) =>
-        (ticketsInStock[key].stock = ticketsToBuy.hasOwnProperty(key)
-          ? ticketsInStock[key].stock - ticketsToBuy[key].amount
-          : ticketsInStock[key].stock)
-    );
-    await exhibition.updateOne({ tickets: ticketsInStock });
-    return ticketsInStock;
+    exhibition.tickets = ticketsInStock;
+    await exhibition.save();
+    //caculate total
+    return total;
+  }
+};
+
+const email = async (userEmail, savedOrder) => {
+  try {
+    const accessToken = await client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: config.gmail_user,
+        clientId: config.gmail_client_id,
+        clientSecret: config.gmail_client_secret,
+        refreshToken: config.gmail_refresh_token,
+        accessToken
+      }
+    });
+    //todo
+    const mailOptions = {
+      from: `Timeless Museum <${config.gmail_user}>`,
+      to: userEmail,
+      subject: `Exhibition Tickets Confirmation - Timeless Museum`,
+      html: `<p>Your order number is <b>#${savedOrder._id}</b></p>
+      <br/>
+      <p>Exhibition: ${savedOrder.exhibitionTitle}</p>
+      `,
+      icalEvent: {
+        filename: "exhibition.ics",
+        method: "request",
+        content: "time, location, tickets, code"
+      }
+    };
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log("Email not sent. Try again.", error);
   }
 };
 
 exports.buyTickets = async (req, res) => {
-  try {
-    let userId = req.decoded._id;
-    let exhibitionOrder = req.body;
-    const { exhibitionId, tickets: ticketsToBuy } = exhibitionOrder;
+  const userId = req.decoded._id;
+  const exhibitionOrder = req.body;
 
-    //updated order, with paymentId
-    let [updatedOrder, ticketsInStock] = await Promise.all([
-      checkPayment(userId, exhibitionOrder),
-      checkTicketStock(exhibitionId, ticketsToBuy)
+  const { exhibitionId, tickets: ticketsToBuy } = exhibitionOrder;
+
+  try {
+    let [order, total] = await Promise.all([
+      checkOrAddPayment(userId, exhibitionOrder),
+      checkStockAndCalc(exhibitionId, ticketsToBuy)
     ]);
 
-    //caculate total
-    let total = 0;
-    Object.keys(ticketsToBuy).map((key) => {
-      ticketsToBuy[key].price = ticketsInStock[key].price;
-      total += ticketsInStock[key].price * ticketsToBuy[key].amount;
-    });
-
     //generate order
-    updatedOrder.total = total;
-    updatedOrder.userId = userId;
+    order.total = total;
+    order.userId = userId;
+    const exhibition = await Exhibition.findById(exhibitionId).exec();
+    order.exhibitionTitle = exhibition.title;
 
-    let exhibition = await Exhibition.findById(exhibitionId).exec();
-    updatedOrder.exhibitionTitle = exhibition.title;
-
-    let savedOrder = await ExhibitionOrder.create(updatedOrder);
+    const savedOrder = await ExhibitionOrder.create(order);
+    res.status(200).json({ exhibitionOrder: savedOrder });
 
     //notify user
-    try {
-      let user = await User.findById(userId).exec();
-      await Promise.race([email(user.email, savedOrder), timeout(6000)]);
-    } catch (error) {
-      console.log("Failed to send order confirmation:", error);
-    }
-    res.status(200).json({ exhibitionOrder: savedOrder });
+    const user = await User.findById(userId).exec();
+    email(user.email, savedOrder);
   } catch (err) {
-    console.log(err);
     res.status(400).json({ err: err.message });
   }
-};
-
-const email = (userEmail, savedOrder) => {
-  return new Promise((resolve, reject) => {
-    let mailOptions = {
-      to: userEmail,
-      subject: "Order Confirmation",
-      text: "Your order number is " + savedOrder._id
-    };
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: gmailAuth
-    });
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(info);
-      }
-    });
-  });
-};
-
-const timeout = (ms) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(reject("timeout"), ms);
-  });
 };
 
 exports.listExhibitionOrders = async (req, res) => {

@@ -6,9 +6,11 @@ module.exports = {
   oauth_client_id:
     "763616496547-8v9bcs1njvp6faoo2lnd59lvai3t2v3h.apps.googleusercontent.com",
   oauth_client_secret: "75dtAkgRCAihfuoRYLgqekRL",
+  gmail_user: "tanmeng.job@gmail.com",
   gmail_client_id:
-    "763616496547-mt7tjoirjdq652pcjum14jni84skiekl.apps.googleusercontent.com",
-  gmail_client_secret: "KZlQ8n1KgRT1NElZMwBkoUDC",
+    "763616496547-0i03etcd24qh22urss0oc9of0asp1eof.apps.googleusercontent.com",
+  gmail_client_secret: "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",
+  gmail_redirect_uri: "https://developers.google.com/oauthplayground",
   gmail_refresh_token:
-    "1//048z6Ti_mmw_LCgYIARAAGAQSNwF-L9IrcsVXv4PvKTL-7VqDDU8XNbHkhHsXSKgT7amxkIRGbDL14sirmjVTVeculQ7aCr7l8wU"
+    "1//04UZbNcHGMYhzCgYIARAAGAQSNwF-L9IrjmX0oSE_CzciaQM1bb62CeAGrpX4uLJ48wff9hgE0IOaeKEaWjhA5b9BaIKOtf66xjE"
 };
