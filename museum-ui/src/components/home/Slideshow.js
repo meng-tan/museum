@@ -25,6 +25,7 @@ const FadeBox = styled(Box)`
   right: 0;
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center center;
   transition: opacity 1.5s ease-in;
   &.fade-in {
     opacity: 1;
