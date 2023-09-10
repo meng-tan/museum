@@ -19,7 +19,7 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: ["cursive", "Georgia", "Roboto", "sans-serif"].join(",")
+    fontFamily: ["Georgia", "serif", "Roboto", "sans-serif"].join(",")
   },
   components: {
     MuiButton: {

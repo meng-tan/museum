@@ -5,7 +5,7 @@ import { keyframes } from "@emotion/react";
 import { Typography, Button, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const fadeInLeft = keyframes`
+const slideFromLeft = keyframes`
 0% {
   opacity: 0;
   transform: translate3d(-50%,0,0);
@@ -16,7 +16,7 @@ const fadeInLeft = keyframes`
 }
 `;
 
-const fadeInRight = keyframes`
+const slideFromRight = keyframes`
 0% {
   opacity: 0;
   transform: translate3d(50%,0,0);
@@ -82,7 +82,7 @@ const FadeBanner = () => {
         variant="overline"
         component={"p"}
         sx={{
-          animation: isVisible && `${fadeInLeft} 2s ease`
+          animation: isVisible && `${slideFromLeft} 2s ease`
         }}
       >
         Ticketed Exhibition
@@ -93,19 +93,21 @@ const FadeBanner = () => {
           mt: 2,
           mb: 1,
           fontSize: "2.5rem",
-          animation: isVisible && `${fadeInLeft} 1s ease`,
+          animation: isVisible && `${slideFromLeft} 1s ease`,
           color: (theme) => theme.palette.primary.main,
           textShadow: (theme) =>
             `2px 2px 2px ${theme.palette.primary.contrastText}, 0 0 1rem ${theme.palette.primary.light}`
         }}
       >
-        Monet/Mitchell: Painting the French Landscape
+        Monet: Painting the French Landscape
       </Typography>
       <Typography
         variant="h6"
-        sx={{ animation: isVisible && `${fadeInLeft} 2s ease` }}
+        sx={{
+          animation: isVisible && `${slideFromLeft} 3s ease`
+        }}
       >
-        Until Sep 25, 2023
+        Through Dec 23, 2023
       </Typography>
       <Button
         variant="contained"
@@ -115,10 +117,10 @@ const FadeBanner = () => {
           mt: 4,
           left: "50%",
           transform: "translateX(-50%)",
-          animation: isVisible && `${fadeInRight} 2s ease`
+          animation: isVisible && `${slideFromRight} 4s ease`
         }}
       >
-        View More Exhibitions
+        More Exhibitions
       </Button>
     </FadeBox>
   );

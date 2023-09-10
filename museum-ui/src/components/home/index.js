@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Button, Typography, Box } from "@mui/material";
@@ -131,7 +130,15 @@ export default function Home() {
 
   return (
     <Box component="main" ref={homeRef}>
-      <BackgroundContainer bgImg={look} id="bg1" nextAnchor={"#bg2"}>
+      <BackgroundContainer
+        bgImg={look}
+        id="bg1"
+        nextAnchor={"#bg2"}
+        sx={{
+          backgroundColor: "rgba(0, 0, 0, 0.15)",
+          backgroundBlendMode: "multiply"
+        }}
+      >
         {matches ? <Typing /> : <GrowText />}
       </BackgroundContainer>
 
@@ -139,7 +146,11 @@ export default function Home() {
         <FadeBanner />
       </BackgroundContainer>
 
-      <BackgroundContainer bgImg={ink} id="bg3" nextAnchor={"#bg4"}>
+      <BackgroundContainer id="bg3" nextAnchor={"#bg4"}>
+        <Slideshow slides={slides} />
+      </BackgroundContainer>
+
+      <BackgroundContainer bgImg={ink} id="bg4">
         <Box
           sx={{
             height: "100%",
@@ -151,28 +162,17 @@ export default function Home() {
             color: "primary.main"
           }}
         >
-          <Box
+          <Typography
+            variant="h5"
             sx={{
-              display: "flex",
-              justifyContent: "space-between"
+              textAlign: "center",
+              textTransform: "uppercase"
             }}
           >
-            <Typography variant="h5">New On View</Typography>
-            <Button variant="contained" component={Link} to="/visit">
-              Plan your visit
-            </Button>
-          </Box>
-
-          <Carousel />
-          <Typography variant="h6">
-            “I took my entire family to the Museum for a day. Everyone has so
-            much fun with all the collection.”
+            Featured
           </Typography>
+          <Carousel />
         </Box>
-      </BackgroundContainer>
-
-      <BackgroundContainer id="bg4">
-        <Slideshow slides={slides} />
       </BackgroundContainer>
 
       <TopButton href="#bg1" id="top" variant="contained">
