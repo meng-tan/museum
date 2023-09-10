@@ -31,6 +31,8 @@ import dayjs from "dayjs";
 import { openAlert } from "@features/alertSlice";
 import { selectUser } from "@features/userSlice";
 
+import ink from "@img/ink-h.png";
+
 export const Tickets = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,8 +162,9 @@ export const Tickets = () => {
         sx={{
           p: 2,
           color: "text.secondary",
-          bgcolor: "beige",
-          borderRadius: "1rem"
+          background: `url(${ink})`,
+          borderRadius: "1rem",
+          boxShadow: "0.1rem 0.1rem 0.5rem rgba(0,0,0,0.2)"
         }}
       >
         <Typography variant="subtitle1" pb={2}>

@@ -71,7 +71,10 @@ const FadeBanner = () => {
         position: "relative",
         top: "50%",
         transform: "translateY(-50%)",
-        border: "2.5vw solid rgba(255,255,255,.7)",
+        border: {
+          sx: "2.5vw solid transparent",
+          md: "2.5vw solid rgba(255,255,255,.7)"
+        },
         padding: "2vw",
         overflow: "hidden"
       }}
