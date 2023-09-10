@@ -19,7 +19,6 @@ import bg2 from "@img/cube/cube3.jpg";
 import bg0 from "@img/cube/cube5.jpg";
 import bg5 from "@img/dance.jpg";
 import bg1 from "@img/gallery2.jpg";
-import ink from "@img/ink-h.png";
 import look from "@img/look.jpg";
 import mist from "@img/mist.jpg";
 import bg6 from "@img/sculpture.jpg";
@@ -150,7 +149,13 @@ export default function Home() {
         <Slideshow slides={slides} />
       </BackgroundContainer>
 
-      <BackgroundContainer bgImg={ink} id="bg4">
+      <BackgroundContainer
+        sx={{
+          backgroundImage: `linear-gradient(-225deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%)`
+        }}
+        // bgImg={ink}
+        id="bg4"
+      >
         <Box
           sx={{
             height: "100%",
@@ -166,7 +171,8 @@ export default function Home() {
             variant="h5"
             sx={{
               textAlign: "center",
-              textTransform: "uppercase"
+              textTransform: "uppercase",
+              color: (theme) => theme.palette.primary.contrastText
             }}
           >
             Featured

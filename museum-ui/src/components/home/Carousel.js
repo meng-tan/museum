@@ -61,11 +61,11 @@ const imgArr = [
 const CardItem = styled(Grid)(
   ({ theme }) => `
   flex-shrink: 0;
-  padding: 1vw;
+  padding: 14px;
   &:hover > img {
-    padding: 0.5rem;
+    padding: 0.4rem;
     background: #fff;
-    box-shadow: 0.3rem 0.3rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    box-shadow: 0.3rem 0.3rem 0.2rem 0.2rem rgba(0, 0, 0, 0.6);
   }
   &:hover > p {
     text-shadow: 0.3rem 0.2rem 0.2rem ${theme.palette.primary.dark}
@@ -78,7 +78,11 @@ const Img = styled("img")(
   width: 100%;
   height: 100%;
   object-fit: cover;
-  padding: 1.2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0.3rem 0.3rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
   transition: ${theme.transitions.create(["all"], {
     duration: theme.transitions.duration.enteringScreen
   })};
