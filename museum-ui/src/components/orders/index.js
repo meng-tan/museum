@@ -9,10 +9,12 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  Typography
+  Typography,
+  Backdrop,
+  CircularProgress
 } from "@mui/material";
 import dayjs from "dayjs";
-import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
 
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
@@ -25,10 +27,12 @@ function Orders() {
 
   const [orders, setOrders] = useState([]);
 
+  const [isLoading, setLoading] = useState(false);
+
   const listContainer = useRef();
 
   const handleNextPage = useCallback(
-    throttle(() => {
+    debounce(() => {
       const scrollHeight = listContainer.current.scrollHeight;
       const { scrollTop, clientHeight } = document.documentElement;
 
@@ -37,15 +41,14 @@ function Orders() {
       console.log(marginToFooter);
       if (marginToFooter <= 100) {
         setPage((page) => page + 1);
-        console.log("add page");
+        setLoading(true);
       }
-    }, 1000),
+    }, 500),
     []
   );
 
   useEffect(() => {
     window.addEventListener("scroll", handleNextPage);
-    console.log("addEventListener ");
     return () => {
       window.removeEventListener("scroll", handleNextPage);
     };
@@ -67,7 +70,12 @@ function Orders() {
             setTotalPage(pages);
             setOrders((prevOrders) => prevOrders.concat(exhibitionOrders));
           }
-        });
+        })
+        .finally(() =>
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000)
+        );
     } else {
       console.log("removeEventListener ");
       window.removeEventListener("scroll", handleNextPage);
@@ -92,6 +100,12 @@ function Orders() {
         }
       }}
     >
+      <Backdrop open={isLoading}>
+        <CircularProgress color="inherit" />
+        <Typography variant="subtitle2" align="center">
+          Loading More...
+        </Typography>
+      </Backdrop>
       {orders.length ? (
         <>
           {orders.map((order) => (
