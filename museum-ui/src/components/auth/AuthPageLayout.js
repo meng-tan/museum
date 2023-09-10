@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import {
   Box,
@@ -16,7 +16,7 @@ import { thunkedLogIn } from "@features/userSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
 
-import { config } from "@config";
+import { config } from "../../config";
 
 function AuthPageLayout() {
   const dispatch = useDispatch();
