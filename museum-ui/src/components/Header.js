@@ -20,7 +20,8 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemText
+  ListItemText,
+  ListItemIcon
 } from "@mui/material";
 
 import { selectUser, thunkedLogout } from "@features/userSlice";
@@ -108,22 +109,27 @@ const Header = forwardRef((props, ref) => {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        {APP.NAME}
-      </Typography>
+    <Box onClick={handleDrawerToggle}>
+      <List disablePadding>
+        <ListItem component={Link} to={"/"}>
+          <ListItemButton>
+            <ListItemIcon>
+              <MuseumIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={APP.NAME}
+              primaryTypographyProps={{
+                textTransform: "uppercase"
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
 
-      <Divider />
-      <List>
         {pages.map((page) => (
-          <ListItem
-            key={page.title}
-            disablePadding
-            component={Link}
-            to={page.link}
-          >
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={page.title} />
+          <ListItem key={page.title} component={Link} to={page.link}>
+            <ListItemButton>
+              <ListItemText primary={page.title} inset />
             </ListItemButton>
           </ListItem>
         ))}
@@ -133,36 +139,58 @@ const Header = forwardRef((props, ref) => {
   return (
     <AppBar {...props} ref={ref}>
       <Toolbar>
-        <IconButton component={Link} to="/" color="inherit">
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{
+            display: {
+              md: "none"
+            }
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <IconButton
+          component={Link}
+          to="/"
+          color="inherit"
+          sx={{
+            display: {
+              xs: "none",
+              md: "inline-flex"
+            }
+          }}
+        >
           <MuseumIcon />
         </IconButton>
+        <Typography
+          variant="button"
+          component={Link}
+          to="/"
+          sx={{
+            display: {
+              xs: "none",
+              md: "inline-flex"
+            },
+            "&:hover": {
+              textDecoration: "none"
+            }
+          }}
+        >
+          {APP.NAME}
+        </Typography>
 
         <Container>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              display: {
-                md: "none"
-              }
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Box
             sx={{
               display: {
                 xs: "none",
                 md: "flex"
               },
-              justifyContent: "center",
-              columnGap: {
-                xs: 1,
-                sm: 2
-              },
-              textTransform: "uppercase"
+              columnGap: 2,
+              justifyContent: "end"
             }}
           >
             {pages.map((page) => (
