@@ -3,13 +3,11 @@ import { useEffect, useRef } from "react";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Button, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { debounce } from "@mui/material/utils";
 
 import BackgroundContainer from "./BackgroundContainer";
 import Carousel from "./Carousel";
 import FadeBanner from "./FadeBanner";
-import GrowText from "./GrowText";
 import Slideshow from "./Slideshow";
 import Typing from "./Typing";
 
@@ -73,7 +71,6 @@ const TopButton = styled(Button)(
 );
 
 export default function Home() {
-  const matches = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const homeRef = useRef();
   // const navigate = useNavigate();
 
@@ -135,10 +132,12 @@ export default function Home() {
         nextAnchor={"#bg2"}
         sx={{
           backgroundColor: "rgba(0, 0, 0, 0.15)",
-          backgroundBlendMode: "multiply"
+          backgroundBlendMode: "multiply",
+          textShadow:
+            "-2px -2px 4px rgba(255, 255, 255, 0.3), 2px 2px 2px rgba(0, 0, 0, 0.6)"
         }}
       >
-        {matches ? <Typing /> : <GrowText />}
+        <Typing />
       </BackgroundContainer>
 
       <BackgroundContainer bgImg={mist} id="bg2" nextAnchor={"#bg3"}>
@@ -153,7 +152,6 @@ export default function Home() {
         sx={{
           backgroundImage: `linear-gradient(-225deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%)`
         }}
-        // bgImg={ink}
         id="bg4"
       >
         <Box

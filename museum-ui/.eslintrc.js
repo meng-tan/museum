@@ -82,7 +82,8 @@ module.exports = {
       {
         ignore: [".jpg$", ".png$", ".webp$"]
       }
-    ]
+    ],
+    "react/no-unknown-property": ["error", { ignore: ["css"] }]
   },
   settings: {
     "import/extensions": [".js", ".jsx"],

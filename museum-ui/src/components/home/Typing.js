@@ -1,26 +1,45 @@
 import { useEffect, useState } from "react";
 
-import { keyframes } from "@emotion/react";
+import { keyframes, css } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
 
 const caret = keyframes`
-  50% {
+  from {
+    border-right: 1px solid #fff;
+  }
+  to {
     border-right-color: transparent;
   }
 `;
 
+const CharSpan = ({ children, ...rest }) => (
+  <span
+    {...rest}
+    css={css`
+      visibility: hidden;
+      transition: visibility 0.2s ease;
+      &.show {
+        visibility: visible;
+        animation: ${caret} 0.4s ease 1;
+      }
+    `}
+  >
+    {children}
+  </span>
+);
+
 const p = "Explore the beauty of 5000 years.";
 
 export default function Typing() {
-  const [text, setText] = useState("");
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    let i = 1;
+    let i = 0;
     const id = setInterval(() => {
-      if (i > p.length) {
+      if (i === p.length) {
         clearInterval(id);
       } else {
-        setText(p.substring(0, i++));
+        setCurrent(i++);
       }
     }, 200);
 
@@ -31,21 +50,23 @@ export default function Typing() {
     <Box
       sx={{
         height: "100%",
-        display: "flex"
+        display: "flex",
+        alignItems: "center",
+        px: "25vw"
       }}
     >
       <Typography
         sx={{
-          margin: "auto",
           fontSize: "2.5rem",
           textTransform: "capitalize",
-          color: (theme) => theme.palette.primary.contrastText,
-          borderRight: (theme) =>
-            `1px solid ${theme.palette.primary.contrastText}`,
-          animation: `${caret} 1s steps(1) infinite`
+          color: (theme) => theme.palette.primary.contrastText
         }}
       >
-        {text}
+        {[...p].map((char, index) => (
+          <CharSpan key={index} className={current >= index ? "show" : ""}>
+            {char}
+          </CharSpan>
+        ))}
       </Typography>
     </Box>
   );
