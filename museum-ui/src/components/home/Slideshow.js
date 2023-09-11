@@ -8,7 +8,12 @@ const FlipTypography = styled(Typography)(
   color: ${theme.palette.primary.main};
   font-size: 2rem;
   text-align: center;
+  text-shadow: 1px 1px 2px ${theme.palette.primary.contrastText},
+   0 0 1rem ${theme.palette.primary.light};
   padding: ${theme.spacing(2)} 0;
+  border: 1.5px solid ${theme.palette.primary.contrastText};
+  border-radius: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 1rem 1rem;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(2px);
   transform-style: preserve-3d;
@@ -26,6 +31,7 @@ const FadeBox = styled(Box)`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+  background-attachment: fixed;
   transition: opacity 1.5s ease-in;
   &.fade-in {
     opacity: 1;
@@ -74,7 +80,7 @@ function Slideshow({ slides, ...rest }) {
           className={index === current ? "fade-in" : "fade-out"}
         >
           <Container
-            maxWidth="sm"
+            maxWidth="xs"
             sx={{
               height: "100%",
               display: "flex",
