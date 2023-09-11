@@ -119,7 +119,7 @@ const Header = forwardRef((props, ref) => {
             <ListItemText
               primary={APP.NAME}
               primaryTypographyProps={{
-                textTransform: "uppercase"
+                variant: "button"
               }}
             />
           </ListItemButton>
@@ -129,7 +129,13 @@ const Header = forwardRef((props, ref) => {
         {pages.map((page) => (
           <ListItem key={page.title} component={Link} to={page.link}>
             <ListItemButton>
-              <ListItemText primary={page.title} inset />
+              <ListItemText
+                primary={page.title}
+                inset
+                primaryTypographyProps={{
+                  variant: "button"
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
@@ -195,7 +201,7 @@ const Header = forwardRef((props, ref) => {
           >
             {pages.map((page) => (
               <Typography
-                variant="subtitle2"
+                variant="button"
                 component={Link}
                 to={page.link}
                 key={page.title}
