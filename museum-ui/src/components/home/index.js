@@ -132,9 +132,7 @@ export default function Home() {
         nextAnchor={"#bg2"}
         sx={{
           backgroundColor: "rgba(0, 0, 0, 0.15)",
-          backgroundBlendMode: "multiply",
-          textShadow:
-            "-2px -2px 4px rgba(255, 255, 255, 0.3), 2px 2px 2px rgba(0, 0, 0, 0.6)"
+          backgroundBlendMode: "multiply"
         }}
       >
         <Typing />

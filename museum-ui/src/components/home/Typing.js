@@ -59,7 +59,8 @@ export default function Typing() {
         sx={{
           fontSize: "2.5rem",
           textTransform: "capitalize",
-          color: (theme) => theme.palette.primary.contrastText
+          color: (theme) => theme.palette.primary.contrastText,
+          textShadow: "var(--text-shadow-gray)"
         }}
       >
         {[...p].map((char, index) => (
