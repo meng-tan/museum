@@ -161,13 +161,14 @@ export const Tickets = () => {
       <Box
         sx={{
           p: 2,
-          color: "text.secondary",
+          color: "#003558",
           background: `url(${ink})`,
+          // background: "linear-gradient(-45deg, #D3DD7B 0%,#5DDDEC 100%)",
           borderRadius: "1rem",
           boxShadow: "0.1rem 0.1rem 0.5rem rgba(0,0,0,0.2)"
         }}
       >
-        <Typography variant="subtitle1" pb={2}>
+        <Typography variant="subtitle2" pb={2}>
           {exhibition?.description}
         </Typography>
         <Typography variant="subtitle2">
