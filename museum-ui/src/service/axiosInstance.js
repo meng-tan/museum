@@ -4,7 +4,7 @@ import { openAlert } from "@features/alertSlice";
 
 import store from "../store";
 
-const isDev = process && process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV === "development";
 
 const axiosInstance = axios.create({
   baseURL: isDev
