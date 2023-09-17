@@ -4,9 +4,12 @@ import { openAlert } from "@features/alertSlice";
 
 import store from "../store";
 
+const isDev = process && process.env.NODE_ENV === "development";
+
 const axiosInstance = axios.create({
-  // baseURL: "https://museum-api.azurewebsites.net",
-  baseURL: "http://localhost:3000",
+  baseURL: isDev
+    ? "http://localhost:3000"
+    : "https://museum-api.azurewebsites.net",
   headers: {
     "Content-Type": "application/json"
   },
