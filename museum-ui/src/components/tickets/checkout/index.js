@@ -1,17 +1,11 @@
 import { useReducer, useState, useLayoutEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import {
-  Backdrop,
-  CircularProgress,
-  Paper,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography
-} from "@mui/material";
+import { Paper, Step, StepLabel, Stepper } from "@mui/material";
 import dayjs from "dayjs";
 
+import { closeMask, openMask } from "@features/maskSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
 import { PATTERN } from "@tools/constant";
@@ -92,6 +86,7 @@ function reducer(state, action) {
 const Checkout = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const reduxDispatch = useDispatch();
 
   const { state: locationState } = useLocation();
 
@@ -103,16 +98,8 @@ const Checkout = () => {
 
   const [status, setStatus] = useState({
     activeStep: 0,
-    isLoading: false,
     exhibitionOrder: null
   });
-
-  const setLoading = (bool) => {
-    setStatus((prevState) => ({
-      ...prevState,
-      isLoading: bool
-    }));
-  };
 
   const handleNext = () => {
     setStatus((prevState) => ({
@@ -173,7 +160,11 @@ const Checkout = () => {
   };
 
   const placeOrder = () => {
-    setLoading(true);
+    reduxDispatch(
+      openMask({
+        msg: "Processing..."
+      })
+    );
 
     const order = {
       exhibitionId: id,
@@ -202,7 +193,7 @@ const Checkout = () => {
       })
       .finally(() => {
         setTimeout(() => {
-          setLoading(false);
+          reduxDispatch(closeMask());
         }, 500);
       });
   };
@@ -238,53 +229,44 @@ const Checkout = () => {
     }
   };
   return (
-    <>
-      <Backdrop open={status.isLoading}>
-        <CircularProgress color="inherit" />
-        <Typography variant="subtitle2" align="center">
-          Please wait...
-        </Typography>
-      </Backdrop>
-
-      <Paper
-        elevation={6}
+    <Paper
+      elevation={6}
+      sx={{
+        py: {
+          xs: 2,
+          md: 4
+        },
+        px: {
+          xs: 2,
+          sm: 4,
+          md: 6
+        }
+      }}
+    >
+      <Stepper
+        activeStep={status.activeStep}
         sx={{
           py: {
-            xs: 2,
-            md: 4
+            xs: 1,
+            sm: 2,
+            md: 3
           },
           px: {
-            xs: 2,
-            sm: 4,
-            md: 6
+            xs: 0,
+            sm: 5,
+            md: 15
           }
         }}
       >
-        <Stepper
-          activeStep={status.activeStep}
-          sx={{
-            py: {
-              xs: 1,
-              sm: 2,
-              md: 3
-            },
-            px: {
-              xs: 0,
-              sm: 5,
-              md: 15
-            }
-          }}
-        >
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-        {renderStepContent(status.activeStep)}
-      </Paper>
-    </>
+      {renderStepContent(status.activeStep)}
+    </Paper>
   );
 };
 

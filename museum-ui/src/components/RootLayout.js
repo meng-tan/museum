@@ -2,9 +2,16 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Outlet, useLocation } from "react-router-dom";
 
-import { Snackbar, Alert } from "@mui/material";
+import {
+  Snackbar,
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Typography
+} from "@mui/material";
 
 import { closeAlert, selectAlert } from "@features/alertSlice";
+import { selectMask } from "@features/maskSlice";
 
 import Footer from "./Footer";
 import Header from "./Header";
@@ -12,6 +19,8 @@ import Header from "./Header";
 export default function RouteLayout() {
   const { pathname } = useLocation();
   const alert = useSelector(selectAlert);
+  const mask = useSelector(selectMask);
+
   const dispatch = useDispatch();
 
   const headerRef = useRef(null);
@@ -61,6 +70,20 @@ export default function RouteLayout() {
           {alert.err}
         </Alert>
       </Snackbar>
+
+      <Backdrop
+        open={mask.loading}
+        sx={{
+          zIndex: 1000,
+          backdropFilter: "blur(2px)",
+          color: "white",
+          display: "flex",
+          flexFlow: "column"
+        }}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="subtitle2">{mask.msg}</Typography>
+      </Backdrop>
 
       <Header ref={headerRef} />
       <Outlet context={headerHeight} />

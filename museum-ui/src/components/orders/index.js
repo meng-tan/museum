@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 
 import {
   Container,
@@ -9,13 +10,12 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  Typography,
-  Backdrop,
-  CircularProgress
+  Typography
 } from "@mui/material";
 import dayjs from "dayjs";
 import debounce from "lodash/debounce";
 
+import { closeMask, openMask } from "@features/maskSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
 import { withAuth } from "@tools/func";
@@ -27,7 +27,7 @@ function Orders() {
 
   const [orders, setOrders] = useState([]);
 
-  const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const listContainer = useRef();
 
@@ -41,7 +41,11 @@ function Orders() {
       console.log(marginToFooter);
       if (marginToFooter <= 100) {
         setPage((page) => page + 1);
-        setLoading(true);
+        dispatch(
+          openMask({
+            msg: "Loading More..."
+          })
+        );
       }
     }, 500),
     []
@@ -73,7 +77,7 @@ function Orders() {
         })
         .finally(() =>
           setTimeout(() => {
-            setLoading(false);
+            dispatch(closeMask());
           }, 1000)
         );
     } else {
@@ -100,12 +104,6 @@ function Orders() {
         }
       }}
     >
-      <Backdrop open={isLoading}>
-        <CircularProgress color="inherit" />
-        <Typography variant="subtitle2" align="center">
-          Loading More...
-        </Typography>
-      </Backdrop>
       {orders.length ? (
         <>
           {orders.map((order) => (
