@@ -36,7 +36,6 @@ export const TicketsCheckoutLayout = () => {
           color="textPrimary"
           component={Link}
           to={`/exhibitions/${id}/tickets`}
-          reloadDocument={true}
         >
           {exhibition?.title}
         </Typography>
