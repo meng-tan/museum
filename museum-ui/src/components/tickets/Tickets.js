@@ -26,6 +26,8 @@ import {
   ButtonGroup,
   Box
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import dayjs from "dayjs";
 
 import { openAlert } from "@features/alertSlice";
@@ -39,6 +41,9 @@ export const Tickets = () => {
 
   const user = useSelector(selectUser);
   const reduxDispatch = useDispatch();
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [exhibition] = useOutletContext();
 
@@ -201,7 +206,7 @@ export const Tickets = () => {
                 </TableCell>
                 {exhibition.tickets[key].stock ? (
                   <TableCell align="center">
-                    <ButtonGroup>
+                    <ButtonGroup size={mobile ? "small" : "medium"}>
                       <Button onClick={() => checkSub(key)}>
                         <RemoveIcon />
                       </Button>
@@ -227,6 +232,7 @@ export const Tickets = () => {
                 disabled={state.total === 0}
                 onClick={checkout}
                 variant="contained"
+                size={mobile ? "small" : "medium"}
                 endIcon={<ArrowForwardIcon />}
               >
                 checkout

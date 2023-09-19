@@ -75,9 +75,9 @@ export default function Home() {
   // const navigate = useNavigate();
 
   useEffect(() => {
-    const scrollToTopBtn = document.getElementById("top");
-    const rootElement = document.documentElement;
     const handleTopBtn = () => {
+      const scrollToTopBtn = document.getElementById("top");
+      const rootElement = document.documentElement;
       // const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
       if (rootElement.scrollTop / rootElement.clientHeight > 1) {
         scrollToTopBtn.classList.add("show");

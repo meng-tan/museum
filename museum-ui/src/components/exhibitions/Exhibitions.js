@@ -142,6 +142,7 @@ export const Exhibitions = () => {
                       md: 3
                     }
                   }}
+                  raised
                 >
                   <Grid container alignItems="center">
                     <Grid

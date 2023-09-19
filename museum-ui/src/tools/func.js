@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { Navigate } from "react-router-dom";
 
 import { selectUser } from "../features/userSlice";
-
+// MUI Default breakpoints
 // xs, extra-small: 0px
 // sm, small: 600px
 // md, medium: 900px
