@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import {
   Snackbar,
@@ -15,9 +15,9 @@ import { selectMask } from "@features/maskSlice";
 
 import Footer from "./Footer";
 import Header from "./Header";
+import ScrollToTop from "./ScrollToTop";
 
 export default function RouteLayout() {
-  const { pathname } = useLocation();
   const alert = useSelector(selectAlert);
   const mask = useSelector(selectMask);
 
@@ -41,14 +41,6 @@ export default function RouteLayout() {
       window.removeEventListener("resize", handleResize);
     };
   }, [headerHeight]);
-
-  useEffect(() => {
-    document.documentElement.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant"
-    });
-  }, [pathname]);
 
   const handleClose = () => dispatch(closeAlert());
 
@@ -88,6 +80,7 @@ export default function RouteLayout() {
       <Header ref={headerRef} />
       <Outlet context={headerHeight} />
       <Footer />
+      <ScrollToTop />
     </>
   );
 }

@@ -61,7 +61,7 @@ function Slideshow({ slides, ...rest }) {
     return () => {
       clearInterval(id);
     };
-  }, [current, slides.length]);
+  }, [current, slides]);
 
   return (
     <Box
