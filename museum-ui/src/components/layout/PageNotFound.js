@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-const PageNotFound = () => {
+export const PageNotFound = () => {
   const navigate = useNavigate();
   return (
     <Container maxWidth="xs" sx={{ pt: 2 }}>
@@ -36,5 +36,3 @@ const PageNotFound = () => {
     </Container>
   );
 };
-
-export default PageNotFound;

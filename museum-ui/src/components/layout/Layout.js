@@ -17,7 +17,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import ScrollToTop from "./ScrollToTop";
 
-export default function RouteLayout() {
+export function Layout() {
   const alert = useSelector(selectAlert);
   const mask = useSelector(selectMask);
 
@@ -46,6 +46,25 @@ export default function RouteLayout() {
 
   return (
     <>
+      <Header ref={headerRef} />
+      <Outlet context={headerHeight} />
+      <Footer />
+      <ScrollToTop />
+
+      <Backdrop
+        open={mask.loading}
+        sx={{
+          zIndex: 1000,
+          backdropFilter: "blur(2px)",
+          color: "white",
+          display: "flex",
+          flexFlow: "column"
+        }}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="subtitle2">{mask.msg}</Typography>
+      </Backdrop>
+
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={alert.open}
@@ -62,25 +81,6 @@ export default function RouteLayout() {
           {alert.err}
         </Alert>
       </Snackbar>
-
-      <Backdrop
-        open={mask.loading}
-        sx={{
-          zIndex: 1000,
-          backdropFilter: "blur(2px)",
-          color: "white",
-          display: "flex",
-          flexFlow: "column"
-        }}
-      >
-        <CircularProgress color="inherit" />
-        <Typography variant="subtitle2">{mask.msg}</Typography>
-      </Backdrop>
-
-      <Header ref={headerRef} />
-      <Outlet context={headerHeight} />
-      <Footer />
-      <ScrollToTop />
     </>
   );
 }

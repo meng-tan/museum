@@ -125,7 +125,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box component="main" ref={homeRef}>
+    <Box ref={homeRef}>
       <BackgroundContainer
         bgImg={look}
         id="bg1"

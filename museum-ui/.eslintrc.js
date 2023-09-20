@@ -83,7 +83,12 @@ module.exports = {
         ignore: [".jpg$", ".png$", ".webp$"]
       }
     ],
-    "react/no-unknown-property": ["error", { ignore: ["css"] }]
+    "react/no-unknown-property": ["error", { ignore: ["css"] }],
+    "prettier/prettier": [
+      "error",
+      { endOfLine: "auto" },
+      { usePrettierrc: true }
+    ]
   },
   settings: {
     "import/extensions": [".js", ".jsx"],

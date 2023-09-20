@@ -4,13 +4,14 @@ import AuthPageLayout from "./components/auth/AuthPageLayout";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import Dashboard from "./components/dashboard";
-import ErrorPage from "./components/ErrorPage";
 import ExhibitionsLayout, { Exhibitions } from "./components/exhibitions";
 import Home from "./components/home";
+import Layout, {
+  PageNotFound,
+  RouteLayout,
+  ErrorPage
+} from "./components/layout";
 import Orders from "./components/orders";
-import PageNotFound from "./components/PageNotFound";
-import RootLayout from "./components/RootLayout";
-import RouteLayout from "./components/RouteLayout";
 import TicketsCheckoutLayout, { Tickets } from "./components/tickets";
 import Checkout from "./components/tickets/checkout";
 import Visit from "./components/visit";
@@ -18,7 +19,7 @@ import Visit from "./components/visit";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
       {
