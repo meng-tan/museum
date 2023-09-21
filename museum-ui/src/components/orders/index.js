@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 
 import {
@@ -23,74 +23,64 @@ import { withAuth } from "@tools/func";
 function Orders() {
   const [hasNext, setHasNext] = useState(true);
   const [page, setPage] = useState(0); // current page
-  const [totalPage, setTotalPage] = useState(0);
 
   const [orders, setOrders] = useState([]);
-
-  const dispatch = useDispatch();
+  const [totalPage, setTotalPage] = useState(0);
 
   const listContainer = useRef();
+  const dispatch = useDispatch();
 
-  const handleNextPage = useCallback(
-    debounce(() => {
+  useEffect(() => {
+    axiosInstance
+      .get(urlConfig.listExhibitionOrders, {
+        params: {
+          page
+        }
+      })
+      .then(({ totalPage: pages, exhibitionOrders }) => {
+        if (pages === 0) {
+          setHasNext(false);
+        } else if (exhibitionOrders.length) {
+          setTotalPage(pages);
+          setOrders((prevOrders) => prevOrders.concat(exhibitionOrders));
+        }
+      })
+      .finally(() =>
+        setTimeout(() => {
+          dispatch(closeMask());
+        }, 1000)
+      );
+  }, [page, dispatch]);
+
+  useEffect(() => {
+    const handleNextPage = debounce(() => {
       const scrollHeight = listContainer.current.scrollHeight;
       const { scrollTop, clientHeight } = document.documentElement;
-
-      const marginToFooter = scrollHeight - (scrollTop + clientHeight);
-
-      console.log(marginToFooter);
-      if (marginToFooter <= 100) {
-        setPage((page) => page + 1);
+      // 60px is about to header height
+      const marginToFooter = scrollHeight + 60 - (scrollTop + clientHeight);
+      if (marginToFooter <= 0) {
         dispatch(
           openMask({
             msg: "Loading More..."
           })
         );
+        setPage((page) => page + 1);
       }
-    }, 500),
-    []
-  );
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleNextPage);
+    }, 1000);
+    if (hasNext) {
+      window.addEventListener("scroll", handleNextPage);
+    } else {
+      window.removeEventListener("scroll", handleNextPage);
+    }
     return () => {
       window.removeEventListener("scroll", handleNextPage);
     };
-  }, []);
-
-  useEffect(() => {
-    if (hasNext) {
-      console.log("hasNext:", hasNext);
-      axiosInstance
-        .get(urlConfig.listExhibitionOrders, {
-          params: {
-            page
-          }
-        })
-        .then(({ totalPage: pages, exhibitionOrders }) => {
-          if (pages === 0) {
-            setHasNext(false);
-          } else if (exhibitionOrders.length) {
-            setTotalPage(pages);
-            setOrders((prevOrders) => prevOrders.concat(exhibitionOrders));
-          }
-        })
-        .finally(() =>
-          setTimeout(() => {
-            dispatch(closeMask());
-          }, 1000)
-        );
-    } else {
-      console.log("removeEventListener ");
-      window.removeEventListener("scroll", handleNextPage);
-    }
-  }, [hasNext, page]);
+  }, [hasNext, dispatch]);
 
   useEffect(() => {
     if (page + 1 === totalPage) {
       setHasNext(false);
     }
-    console.log("page", page, "totolpage:", totalPage);
   }, [page, totalPage]);
 
   return (
