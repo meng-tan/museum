@@ -48,6 +48,7 @@ function Orders() {
           }
         }
       })
+      .catch((err) => console.log(err))
       .finally(() =>
         setTimeout(() => {
           dispatch(thunkedCloseMask());
