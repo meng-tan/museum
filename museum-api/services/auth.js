@@ -24,7 +24,7 @@ exports.checkToken = (req, res, next) => {
     }
     jwt.verify(token, config.jwt_secret, (err, decoded) => {
       if (err) {
-        res.status(401).json({ err: "invalid token" });
+        res.status(401).json({ err: "Invalid Token" });
       } else {
         setResToken(res, decoded);
         req.decoded = decoded;
@@ -32,7 +32,7 @@ exports.checkToken = (req, res, next) => {
       }
     });
   } else {
-    res.status(401).json({ err: "please login" });
+    res.status(401).json({ err: "Please Login" });
   }
 };
 
