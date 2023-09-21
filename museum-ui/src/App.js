@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import About from "./components/about";
 import AuthPageLayout from "./components/auth/AuthPageLayout";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -14,7 +15,6 @@ import Layout, {
 import Orders from "./components/orders";
 import TicketsCheckoutLayout, { Tickets } from "./components/tickets";
 import Checkout from "./components/tickets/checkout";
-import Visit from "./components/visit";
 
 const router = createBrowserRouter([
   {
@@ -44,8 +44,8 @@ const router = createBrowserRouter([
             ]
           },
           {
-            path: "visit",
-            element: <Visit />
+            path: "about",
+            element: <About />
           },
           {
             path: "exhibitions",
