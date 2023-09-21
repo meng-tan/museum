@@ -21,6 +21,7 @@ import utc from "dayjs/plugin/utc";
 
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
+import { ERR } from "@tools/constant";
 
 extend(utc);
 
@@ -68,10 +69,10 @@ export const Exhibitions = () => {
     let dateError;
     switch (newError) {
       case "disablePast":
-        dateError = "Please select a future date";
+        dateError = ERR.PAST_DATE;
         break;
       case "invalidDate":
-        dateError = "Invalid Date";
+        dateError = ERR.INVALID_DATE;
         break;
       default:
         dateError = " ";

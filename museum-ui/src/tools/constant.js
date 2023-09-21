@@ -11,3 +11,11 @@ export const PATTERN = {
 export const APP = {
   NAME: "Timeless Museum"
 };
+
+export const ERR = {
+  EXPIRED_TOKEN: "Expired Token",
+  LOGIN_AGAIN: "Token expired, please login again.",
+  LOGIN_FAILED: "Google Login failed, please try again",
+  PAST_DATE: "Please select a future date",
+  INVALID_DATE: "Invalid Date"
+};

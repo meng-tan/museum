@@ -15,6 +15,7 @@ import { openAlert } from "@features/alertSlice";
 import { thunkedLogIn } from "@features/userSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
+import { ERR } from "@tools/constant";
 
 import { config } from "../../config";
 
@@ -104,7 +105,7 @@ function AuthPageLayout() {
                 dispatch(
                   openAlert({
                     severity: "error",
-                    err: "Google Login failed, please try again"
+                    err: ERR.LOGIN_FAILED
                   })
                 );
               }}

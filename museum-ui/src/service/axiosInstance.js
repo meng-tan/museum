@@ -5,10 +5,9 @@ import jwt_decode from "jwt-decode";
 import { openAlert } from "@features/alertSlice";
 import { thunkedOpenMask } from "@features/maskSlice";
 import { thunkedLogout } from "@features/userSlice";
+import { ERR } from "@tools/constant";
 
 import store from "../store";
-
-const EXPIRED_TOKEN = "Expired Token";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -34,7 +33,7 @@ axiosInstance.interceptors.request.use(
         config.headers.Authorization = "Bearer " + token;
       } else {
         const controller = new AbortController();
-        controller.abort(EXPIRED_TOKEN);
+        controller.abort(ERR.EXPIRED_TOKEN);
         return {
           ...config,
           signal: controller.signal
@@ -67,10 +66,10 @@ axiosInstance.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
-    if (error.config?.signal?.reason === EXPIRED_TOKEN) {
+    if (error.config?.signal?.reason === ERR.EXPIRED_TOKEN) {
       store.dispatch(
         thunkedOpenMask({
-          msg: "Token expired, please login again."
+          msg: ERR.LOGIN_AGAIN
         })
       );
       store.dispatch(thunkedLogout());
