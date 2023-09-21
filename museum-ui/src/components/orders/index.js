@@ -15,7 +15,7 @@ import {
 import dayjs from "dayjs";
 import debounce from "lodash/debounce";
 
-import { closeMask, openMask } from "@features/maskSlice";
+import { thunkedCloseMask, thunkedOpenMask } from "@features/maskSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
 import { withAuth } from "@tools/func";
@@ -47,7 +47,7 @@ function Orders() {
       })
       .finally(() =>
         setTimeout(() => {
-          dispatch(closeMask());
+          dispatch(thunkedCloseMask());
         }, 1000)
       );
   }, [page, dispatch]);
@@ -60,7 +60,7 @@ function Orders() {
       const marginToFooter = scrollHeight + 60 - (scrollTop + clientHeight);
       if (marginToFooter <= 0) {
         dispatch(
-          openMask({
+          thunkedOpenMask({
             msg: "Loading More..."
           })
         );

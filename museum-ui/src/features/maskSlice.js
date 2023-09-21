@@ -5,14 +5,28 @@ const initialState = {
 
 export const selectMask = (state) => state.mask;
 
-export const openMask = (payload) => {
+const openMask = (payload) => {
   return {
     type: "mask/open",
     payload
   };
 };
 
-export const closeMask = () => ({ type: "mask/close" });
+const closeMask = () => ({ type: "mask/close" });
+
+export const thunkedOpenMask = (payload) => {
+  return (dispatch, getState) => {
+    document.documentElement.classList.add("overlay");
+    return dispatch(openMask(payload));
+  };
+};
+
+export const thunkedCloseMask = () => {
+  return (dispatch, getState) => {
+    document.documentElement.classList.remove("overlay");
+    return dispatch(closeMask());
+  };
+};
 
 export default function userReducer(state = initialState, action) {
   switch (action.type) {

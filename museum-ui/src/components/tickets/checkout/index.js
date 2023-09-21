@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Paper, Step, StepLabel, Stepper } from "@mui/material";
 import dayjs from "dayjs";
 
-import { closeMask, openMask } from "@features/maskSlice";
+import { thunkedCloseMask, thunkedOpenMask } from "@features/maskSlice";
 import axiosInstance from "@service/axiosInstance";
 import urlConfig from "@service/urlConfig";
 import { PATTERN } from "@tools/constant";
@@ -161,7 +161,7 @@ const Checkout = () => {
 
   const placeOrder = () => {
     reduxDispatch(
-      openMask({
+      thunkedOpenMask({
         msg: "Processing..."
       })
     );
@@ -193,7 +193,7 @@ const Checkout = () => {
       })
       .finally(() => {
         setTimeout(() => {
-          reduxDispatch(closeMask());
+          reduxDispatch(thunkedCloseMask());
         }, 500);
       });
   };
