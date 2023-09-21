@@ -21,11 +21,10 @@ import urlConfig from "@service/urlConfig";
 import { withAuth } from "@tools/func";
 
 function Orders() {
-  const [hasNext, setHasNext] = useState(true);
+  const [hasNext, setHasNext] = useState(null);
   const [page, setPage] = useState(0); // current page
 
   const [orders, setOrders] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
 
   const listContainer = useRef();
   const dispatch = useDispatch();
@@ -41,8 +40,12 @@ function Orders() {
         if (pages === 0) {
           setHasNext(false);
         } else if (exhibitionOrders.length) {
-          setTotalPage(pages);
           setOrders((prevOrders) => prevOrders.concat(exhibitionOrders));
+          if (page + 1 === pages) {
+            setHasNext(false);
+          } else {
+            setHasNext(true);
+          }
         }
       })
       .finally(() =>
@@ -67,21 +70,15 @@ function Orders() {
         setPage((page) => page + 1);
       }
     }, 1000);
-    if (hasNext) {
+    if (hasNext === true) {
       window.addEventListener("scroll", handleNextPage);
-    } else {
+    } else if (hasNext === false) {
       window.removeEventListener("scroll", handleNextPage);
     }
     return () => {
       window.removeEventListener("scroll", handleNextPage);
     };
   }, [hasNext, dispatch]);
-
-  useEffect(() => {
-    if (page + 1 === totalPage) {
-      setHasNext(false);
-    }
-  }, [page, totalPage]);
 
   return (
     <Container

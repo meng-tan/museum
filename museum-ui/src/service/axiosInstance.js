@@ -55,7 +55,7 @@ axiosInstance.interceptors.response.use(
         severity: "error"
       })
     );
-    console.log(error, store, store.getState());
+    console.log(error, store.getState());
     return Promise.reject(error.response?.data?.err || error.message);
   }
 );
