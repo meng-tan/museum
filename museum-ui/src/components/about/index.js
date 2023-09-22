@@ -9,11 +9,16 @@ import bg from "@img/pearl.jpg";
 export default function About() {
   useEffect(() => {
     const gridBoxes = document.getElementsByClassName("grid-box");
+    const queue = [];
     for (let i = 0; i < gridBoxes.length; i++) {
-      setTimeout(() => {
-        gridBoxes[i].classList.add("show");
+      const id = setTimeout(() => {
+        gridBoxes[i]?.classList.add("show");
       }, i * 200);
+      queue.push(id);
     }
+    return () => {
+      queue.forEach(clearTimeout);
+    };
   }, []);
 
   return (
@@ -85,7 +90,7 @@ export default function About() {
           <Typography variant="h4" color="primary.light">
             About Us
           </Typography>
-          <Typography variant="subtitle2">
+          <Typography variant="body1">
             An internationally renowned art museum and one of the most
             significant architectural icons of the 20th century, the {APP.NAME}{" "}
             is at once a vital cultural center, an educational institution, and
