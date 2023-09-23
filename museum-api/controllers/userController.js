@@ -10,13 +10,6 @@ const Payment = require("../models/payment");
 const auth = require("../services/auth");
 const config = require("../config.js");
 
-const client = new OAuth2Client(
-  config.gmail_client_id,
-  config.gmail_client_secret,
-  config.gmail_redirect_uri
-);
-client.setCredentials({ refresh_token: config.gmail_refresh_token });
-
 exports.register = async (req, res) => {
   const { email, username, password } = req.body;
 
@@ -146,6 +139,12 @@ const checkStockAndCalc = async (exhibitionId, ticketsToBuy) => {
 
 const email = async (userEmail, savedOrder) => {
   try {
+    const client = new OAuth2Client(
+      config.gmail_client_id,
+      config.gmail_client_secret,
+      config.gmail_redirect_uri
+    );
+    client.setCredentials({ refresh_token: config.gmail_refresh_token });
     const accessToken = await client.getAccessToken();
 
     const transporter = nodemailer.createTransport({

@@ -2,8 +2,6 @@ const config = require("../config.js");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 
-const client = new OAuth2Client(config.oauth_client_id);
-
 const setResToken = (res, payload) => {
   res.set(
     "token",
@@ -38,6 +36,7 @@ exports.checkToken = (req, res, next) => {
 
 exports.verifyCredential = async (idToken) => {
   try {
+    const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
       idToken,
       audience: config.oauth_client_id

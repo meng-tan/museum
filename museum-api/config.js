@@ -12,5 +12,5 @@ module.exports = {
   gmail_client_secret: "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",
   gmail_redirect_uri: "https://developers.google.com/oauthplayground",
   gmail_refresh_token:
-    "1//04UZbNcHGMYhzCgYIARAAGAQSNwF-L9IrjmX0oSE_CzciaQM1bb62CeAGrpX4uLJ48wff9hgE0IOaeKEaWjhA5b9BaIKOtf66xjE"
+    "1//04zOvX2NUJjAbCgYIARAAGAQSNwF-L9IrQ_wTlle06ytWtF-mBaCPglcGhuFU_BR-7hx2LUHwM4SGXc6wYlEY2VskMzEuvFkYoc0"
 };
