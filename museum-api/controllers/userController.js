@@ -158,7 +158,6 @@ const email = async (userEmail, savedOrder) => {
         accessToken
       }
     });
-    //todo
     const mailOptions = {
       from: `Timeless Museum <${config.gmail_user}>`,
       to: userEmail,
@@ -166,12 +165,8 @@ const email = async (userEmail, savedOrder) => {
       html: `<p>Your order number is <b>#${savedOrder._id}</b></p>
       <br/>
       <p>Exhibition: ${savedOrder.exhibitionTitle}</p>
-      `,
-      icalEvent: {
-        filename: "exhibition.ics",
-        method: "request",
-        content: "time, location, tickets, code"
-      }
+      `
+      //todo
     };
     await transporter.sendMail(mailOptions);
   } catch (error) {
