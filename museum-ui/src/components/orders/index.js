@@ -143,7 +143,7 @@ function Orders() {
                 ))}
                 <ListItem>
                   <ListItemText />
-                  <Typography variant="subtitle1">
+                  <Typography variant="subtitle2">
                     Total: ${order.total}
                   </Typography>
                 </ListItem>

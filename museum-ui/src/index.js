@@ -19,7 +19,34 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: ["Georgia", "serif", "Roboto", "sans-serif"].join(",")
+    fontFamily: ["Georgia", "serif", "Roboto", "sans-serif"].join(","),
+    h3: {
+      fontWeight: "bold",
+      color: "#000006"
+    },
+    h4: {
+      fontWeight: "bold",
+      color: "#212529"
+    },
+    h5: {
+      color: "#212529"
+    },
+    h6: {
+      fontWeight: "bold"
+    },
+    subtitle1: {
+      color: "#2B292B"
+    },
+    subtitle2: {
+      fontWeight: "bold",
+      color: "#2B292B"
+    },
+    body1: {
+      color: "#333333"
+    },
+    body2: {
+      color: "#65696A"
+    }
   },
   components: {
     MuiButton: {

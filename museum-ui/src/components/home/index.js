@@ -164,7 +164,7 @@ export default function Home() {
           }}
         >
           <Typography
-            variant="h5"
+            variant="h4"
             sx={{
               textAlign: "center",
               textTransform: "uppercase",

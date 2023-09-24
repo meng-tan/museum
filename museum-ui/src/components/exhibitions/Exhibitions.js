@@ -164,7 +164,7 @@ export const Exhibitions = () => {
                     <Grid item xs={12} md={6}>
                       <CardHeader title={exhibition.title} />
                       <CardContent>
-                        <Typography variant="subtitle2">
+                        <Typography variant="body1">
                           {`Duration: ${dayjs
                             .utc(exhibition.dateFrom)
                             .local()
@@ -173,7 +173,7 @@ export const Exhibitions = () => {
                             .local()
                             .format("YYYY/MM/DD")}`}
                         </Typography>
-                        <Typography variant="subtitle2">
+                        <Typography variant="body1">
                           {`Location: ${exhibition.location}`}
                         </Typography>
                       </CardContent>

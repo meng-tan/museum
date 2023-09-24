@@ -9,7 +9,7 @@ export default function Confirm(props) {
       <Typography variant="h5" gutterBottom>
         Thank you for your order.
       </Typography>
-      <Typography variant="subtitle1" gutterBottom>
+      <Typography variant="body1" gutterBottom>
         Your order number is{" "}
         <Chip
           label={` #${props.exhibitionOrder?._id}`}

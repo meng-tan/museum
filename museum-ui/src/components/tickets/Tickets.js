@@ -166,17 +166,16 @@ export const Tickets = () => {
       <Box
         sx={{
           p: 2,
-          color: "#003558",
           background: `url(${ink})`,
           // background: "linear-gradient(-45deg, #D3DD7B 0%,#5DDDEC 100%)",
           borderRadius: "1rem",
           boxShadow: "0.1rem 0.1rem 0.5rem rgba(0,0,0,0.2)"
         }}
       >
-        <Typography variant="subtitle2" pb={2}>
+        <Typography variant="body1" color="#003558" pb={2}>
           {exhibition?.description}
         </Typography>
-        <Typography variant="subtitle2">
+        <Typography variant="body1" color="#003558">
           {`${dayjs
             .utc(exhibition?.dateFrom)
             .local()
@@ -185,15 +184,23 @@ export const Tickets = () => {
             .local()
             .format("YYYY/MM/DD")}`}
         </Typography>
-        <Typography variant="subtitle2">{exhibition?.location}</Typography>
+        <Typography variant="body1" color="#003558">
+          {exhibition?.location}
+        </Typography>
       </Box>
 
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Type</TableCell>
-            <TableCell align="center">Price</TableCell>
-            <TableCell align="center">Amount</TableCell>
+            <TableCell align="center" className="bold">
+              Type
+            </TableCell>
+            <TableCell align="center" className="bold">
+              Price
+            </TableCell>
+            <TableCell align="center" className="bold">
+              Amount
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

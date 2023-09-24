@@ -82,20 +82,19 @@ const FadeBanner = () => {
       className={isVisible ? "visible" : "hide"}
     >
       <Typography
-        variant="overline"
-        component={"p"}
+        variant="h6"
+        textTransform="uppercase"
         sx={{
           animation: isVisible && `${slideFromLeft} 2s ease`
         }}
       >
-        Ticketed Exhibition
+        Highlight
       </Typography>
       <Typography
-        variant="h3"
+        variant="h4"
         sx={{
           mt: 2,
           mb: 1,
-          fontSize: "2.5rem",
           animation: isVisible && `${slideFromLeft} 1s ease`,
           color: (theme) => theme.palette.primary.main,
           textShadow: (theme) =>
@@ -105,8 +104,9 @@ const FadeBanner = () => {
         Monet: Painting the French Landscape
       </Typography>
       <Typography
-        variant="h6"
+        variant="body1"
         sx={{
+          color: (theme) => theme.palette.primary.contrastText,
           animation: isVisible && `${slideFromLeft} 3s ease`
         }}
       >

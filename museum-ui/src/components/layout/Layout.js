@@ -62,7 +62,9 @@ export function Layout() {
         }}
       >
         <CircularProgress color="inherit" />
-        <Typography variant="subtitle2">{mask.msg}</Typography>
+        <Typography variant="subtitle2" color="white">
+          {mask.msg}
+        </Typography>
       </Backdrop>
 
       <Snackbar

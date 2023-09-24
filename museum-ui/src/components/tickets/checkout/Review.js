@@ -54,7 +54,7 @@ export default function Review(props) {
 
         <ListItem>
           <ListItemText />
-          <Typography variant="subtitle1">Total: ${total}</Typography>
+          <Typography variant="subtitle2">Total: ${total}</Typography>
         </ListItem>
       </List>
 
