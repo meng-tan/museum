@@ -84,7 +84,8 @@ export default function About() {
             width: "max(50%, 300px)",
             margin: "auto",
             display: "flex",
-            flexFlow: "column"
+            flexDirection: "column",
+            gap: 1
           }}
         >
           <Typography variant="h4" color="primary.light">

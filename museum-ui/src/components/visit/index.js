@@ -71,7 +71,7 @@ export default function Visit() {
         sx={{
           py: "2rem",
           my: 2,
-          background: "#F2F2F2"
+          background: "var(--bg-gray)"
         }}
       >
         <Typography variant="h6">Address</Typography>

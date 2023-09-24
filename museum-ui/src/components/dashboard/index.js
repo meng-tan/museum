@@ -21,7 +21,7 @@ const Dashboard = () => {
             {`Hello, ${user?.username}`}
           </Typography>
         </Box>
-        <Box gridColumn="span 2" justifySelf="flex-end">
+        <Box gridColumn="span 2">
           <Button
             startIcon={<ArrowBackIcon />}
             component={Link}
@@ -30,9 +30,9 @@ const Dashboard = () => {
             Exhibitions
           </Button>
         </Box>
-        <Box gridColumn="span 2">
+        <Box gridColumn="span 2" justifySelf={"end"}>
           <Button endIcon={<ArrowForwardIcon />} component={Link} to="/orders">
-            Order History
+            Orders
           </Button>
         </Box>
       </Box>
