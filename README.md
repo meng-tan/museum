@@ -4,7 +4,7 @@
 - Implemented smooth interactions on the landing page through CSS3-based transitions, keyframe animations, Intersection Observer API, and DOM event listeners
 - Leveraged various state management techniques, including React Hooks, React Router and Redux, to ensure efficient and scalable handling of application state
 - Improved performance with lodash debounce in scenarios like infinite scroll
-- Visulized data effectively using highcharts pie chart and ultilized Google Maps to create an intuitive and engaging experience
+- Visualized data effectively using highcharts pie chart and utilized Google Maps to create an intuitive and engaging experience
 - Ensured a secure login experience with Google login integration and employed JWT and sessionStorage for authentication and session management
 - Integrated Gmail API with nodemailer
 - Enabled CORS as a middleware by setting HTTP access control response headers
