@@ -15,6 +15,7 @@ import Layout, {
 import Orders from "./components/orders";
 import TicketsCheckoutLayout, { Tickets } from "./components/tickets";
 import Checkout from "./components/tickets/checkout";
+import Visit from "./components/visit";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
           {
             path: "about",
             element: <About />
+          },
+          {
+            path: "visit",
+            element: <Visit />
           },
           {
             path: "exhibitions",
