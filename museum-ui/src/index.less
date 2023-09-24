@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  --min-width: 350px;
+  --text-shadow-gray: -2px -2px 4px rgba(255, 255, 255, 0.3),
+    2px 2px 2px rgba(0, 0, 0, 0.6);
+  --bg-gray: #f2f2f2;
+
+  // --cardBorderColor: #e7ecf1;
+  // --cardBackground: #f6f9fc;
+
+  // --blendBackground: #80e9ff;
+  // --blendIntersection: #0048e5;
+  // --blendForeground: #7a73ff;
+  // --gradientColorZero: #a960ee;
+  // --gradientColorOne: #ff333d;
+  // --gradientColorTwo: #90e0ff;
+  // --gradientColorThree: #ffcb57
+
+  // --shadeOneColor: #02bcf5;
+  // --shadeTwoColor: #0073e6;
+  // --shadeThreeColor: #003ab9;
+  // --shadeFourColor: #635bff;
+  // --shadeFiveColor: #002c59;
+  // --shadeSixColor: #09cbcb;
+
+  body {
+    min-width: var(--min-width);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+}
+
+.overlay {
+  overflow: hidden;
+}

@@ -1,53 +1,107 @@
-import React from 'react';
-import Header from './components/Header';
-import Checkout from './components/checkout';
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import Home from "./components/home"
-import ExhibitionContainer from "./components/exhibitions"
-import Ticket from "./components/tickets"
-import Auth from './components/auth/Auth';
-import Signup from './components/auth/Signup';
-import Login from './components/auth/Login';
-import Orders from "./components/orders"
-import UserService from './components/service/UserService'
-import Typography from '@material-ui/core/Typography';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  return <Route {...rest} render={props =>
-    UserService.getInstance().isLoggedIn()
-      ? <Component {...props} />
-      : <Redirect to={{ pathname: "/auth" }} />
-  } />
-}
+import About from "./components/about";
+import AuthPageLayout from "./components/auth/AuthPageLayout";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import Collection from "./components/collection";
+import Dashboard from "./components/dashboard";
+import ExhibitionsLayout, { Exhibitions } from "./components/exhibitions";
+import Home from "./components/home";
+import Layout, {
+  PageNotFound,
+  RouteLayout,
+  ErrorPage
+} from "./components/layout";
+import Orders from "./components/orders";
+import TicketsCheckoutLayout, { Tickets } from "./components/tickets";
+import Checkout from "./components/tickets/checkout";
+import Visit from "./components/visit";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Home />
+      },
+      {
+        element: <RouteLayout />,
+        hasErrorBoundary: true, // todo
+        children: [
+          {
+            element: <AuthPageLayout />,
+            children: [
+              {
+                path: "login",
+                element: <Login />
+              },
+              {
+                path: "signup",
+                element: <Signup />
+              }
+            ]
+          },
+          {
+            path: "about",
+            element: <About />
+          },
+          {
+            path: "visit",
+            element: <Visit />
+          },
+          {
+            path: "collection",
+            element: <Collection />
+          },
+          {
+            path: "exhibitions",
+            element: <ExhibitionsLayout />,
+            children: [
+              {
+                index: true,
+                element: <Exhibitions />
+              },
+              {
+                path: ":id/tickets",
+                element: <TicketsCheckoutLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <Tickets />
+                  },
+                  {
+                    path: "checkout",
+                    element: <Checkout />
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            path: "orders",
+            element: <Orders />
+          },
+          {
+            path: "dashboard",
+            element: <Dashboard />
+          },
+          {
+            path: "*",
+            element: <PageNotFound />
+          }
+        ]
+      }
+    ]
+  }
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-
-        <Header />
-
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/home" component={Home} />
-
-          <Route exact path="/auth" component={Auth} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/signup" component={Signup} />
-
-          <Route exact path="/exhibitions" component={ExhibitionContainer} />
-          <Route exact path="/exhibitions/id/:id" component={Ticket} />
-
-          <ProtectedRoute exact path="/exhibitions/id/:id/checkout" component={Checkout} />
-          <ProtectedRoute exact path="/orders" component={Orders} />
-
-          <Route render={() => <Typography align="center" variant="subtitle2">Page Not Found</Typography>} />
-        </Switch>
-
-      </BrowserRouter>
-    </div>
-
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

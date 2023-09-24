@@ -1,142 +1,168 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import UserService from '../service/UserService'
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Moment from 'moment';
-import Divider from '@material-ui/core/Divider';
-import throttle from "lodash/throttle";
+import { useEffect, useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 
-const useStyles = makeStyles((theme) => ({
-    layout: {
-        width: 'auto',
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-            width: 600,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-        },
-    },
-    paper: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(3),
-        padding: theme.spacing(2),
-        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-            marginTop: theme.spacing(6),
-            marginBottom: theme.spacing(6),
-            padding: theme.spacing(3),
-        },
-    },
-    listItem: {
-        padding: theme.spacing(1, 0),
-    },
-    total: {
-        fontWeight: 700,
-    },
-    title: {
-        marginTop: theme.spacing(2),
-    },
+import {
+  Container,
+  Chip,
+  Grid,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography
+} from "@mui/material";
+import dayjs from "dayjs";
+import debounce from "lodash/debounce";
 
-}));
+import { thunkedCloseMask, thunkedOpenMask } from "@features/maskSlice";
+import axiosInstance from "@service/axiosInstance";
+import urlConfig from "@service/urlConfig";
+import { withAuth } from "@tools/func";
 
 function Orders() {
-    const classes = useStyles();
+  const [hasNext, setHasNext] = useState(null);
+  const [page, setPage] = useState(0); // current page
 
-    let [page, setPage] = useState(0);
+  const [orders, setOrders] = useState([]);
 
-    let [totalPage, setTotalPage] = useState(0);
+  const listContainer = useRef();
+  const dispatch = useDispatch();
 
-    let [hasNext, setHasNext] = useState(true);
-
-    let [exhibitionOrders, updateOrders] = useState([]);
-
-    useEffect(() => {
-        if (hasNext) {
-            UserService.getInstance()
-                .listExhibitionOrders(page)
-                .then(res => {
-                    if (res.totalPage === 0) {
-                        setHasNext(false)
-                        console.log("no orders")
-                    } else if (res.exhibitionOrders && res.exhibitionOrders.length) {
-                        setTotalPage(res.totalPage)
-                        updateOrders(exhibitionOrders.concat(res.exhibitionOrders))
-                        console.log("update orders")
-
-                        if (page + 1 === totalPage) {
-                            setHasNext(false)
-                            console.log("effect set has no next")
-                        }
-                    }
-                })
-        } else {
-            window.removeEventListener('scroll', handleScroll)
-            console.log("effect remove1")
+  useEffect(() => {
+    axiosInstance
+      .get(urlConfig.listExhibitionOrders, {
+        params: {
+          page
         }
-    }, [page, hasNext]);
-
-
-
-    var handleScroll = useCallback(throttle(() => {
-        let scrollHeight = document.documentElement.scrollHeight
-        let scrollTop = document.documentElement.scrollTop
-        let clientHeight = document.body.clientHeight
-        let marginBottom = scrollHeight - scrollTop - clientHeight
-        console.log(marginBottom)
-        if (marginBottom <= 10) {
-            setPage(page => page + 1)
-            console.log("add page")
+      })
+      .then(({ totalPage: pages, exhibitionOrders }) => {
+        if (pages === 0) {
+          setHasNext(false);
+        } else if (exhibitionOrders.length) {
+          setOrders((prevOrders) => prevOrders.concat(exhibitionOrders));
+          if (page + 1 === pages) {
+            setHasNext(false);
+          } else {
+            setHasNext(true);
+          }
         }
-    }, 1000), [])
+      })
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          dispatch(thunkedCloseMask());
+        }, 1000)
+      );
+  }, [page, dispatch]);
 
-    window.addEventListener('scroll', handleScroll)
+  useEffect(() => {
+    const handleNextPage = debounce(() => {
+      const scrollHeight = listContainer.current.scrollHeight;
+      const { scrollTop, clientHeight } = document.documentElement;
+      // 60px is about to header height
+      const marginToFooter = scrollHeight + 60 - (scrollTop + clientHeight);
+      if (marginToFooter <= 0) {
+        dispatch(
+          thunkedOpenMask({
+            msg: "Loading More..."
+          })
+        );
+        setPage((page) => page + 1);
+      }
+    }, 1000);
+    if (hasNext === true) {
+      window.addEventListener("scroll", handleNextPage);
+    } else if (hasNext === false) {
+      window.removeEventListener("scroll", handleNextPage);
+    }
+    return () => {
+      window.removeEventListener("scroll", handleNextPage);
+    };
+  }, [hasNext, dispatch]);
 
-    return (
-        <main className={classes.layout}>
+  return (
+    <Container
+      maxWidth="md"
+      ref={listContainer}
+      sx={{
+        py: {
+          xs: 2,
+          md: 3
+        }
+      }}
+    >
+      {orders.length ? (
+        <>
+          {orders.map((order) => (
+            <Paper
+              elevation={3}
+              key={order._id}
+              sx={{
+                p: {
+                  xs: 1,
+                  md: 2
+                },
+                mb: {
+                  xs: 2,
+                  md: 3
+                }
+              }}
+            >
+              <Grid container alignItems="baseline">
+                <Grid item xs={12} md={6}>
+                  <Typography variant="caption" gutterBottom component={"p"}>
+                    Order Number: #{order._id}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography
+                    variant="body2"
+                    gutterBottom
+                    color="textSecondary"
+                    textAlign={{ md: "right" }}
+                  >
+                    Placed Time:{" "}
+                    {dayjs(order.placedTime).format("MMMM D YYYY, h:mm:ss a")}
+                  </Typography>
+                </Grid>
+              </Grid>
 
-            {exhibitionOrders.length
-                ?
-                <React.Fragment>
-
-                    {exhibitionOrders.map(order => (
-                        <Paper className={classes.paper} key={order._id}>
-                            <Typography variant="h6" gutterBottom>Order Number: #{order._id}</Typography>
-                            <Typography variant="body2" gutterBottom>Placed Time: {Moment(order.placedTime).format('MMMM Do YYYY, h:mm:ss a')}</Typography>
-                            <Divider />
-                            <List disablePadding>
-                                <ListItem className={classes.listItem}>
-                                    <ListItemText primary={order.exhibitionTitle} />
-                                </ListItem>
-                                {Object.keys(order.tickets).map(key => (
-                                    <ListItem className={classes.listItem} key={key}>
-                                        <ListItemText secondary={key} />
-                                        <Typography variant="body2">${order.tickets[key].price}*{order.tickets[key].amount}</Typography>
-                                    </ListItem>
-                                ))}
-                                <ListItem className={classes.listItem}>
-                                    <ListItemText primary="Total" />
-                                    <Typography variant="subtitle1" className={classes.total}>${order.total}</Typography>
-                                </ListItem>
-                            </List>
-                        </Paper>))}
-                    {!hasNext &&
-                        <Paper className={classes.paper}>
-                            <Typography variant="h6" gutterBottom>No more orders.</Typography>
-                        </Paper>
-                    }
-                </React.Fragment>
-                :
-                <Paper className={classes.paper}>
-                    <Typography variant="h6" gutterBottom>You haven't placed any orders yet.</Typography>
-                </Paper>}
-
-        </main>
-    )
+              <Divider />
+              <List disablePadding dense>
+                <ListItem>
+                  <ListItemText primary={order.exhibitionTitle} />
+                </ListItem>
+                {Object.keys(order.tickets).map((key) => (
+                  <ListItem key={`${order._id}-${key}`}>
+                    <ListItemText secondary={key} />
+                    <Typography variant="body2" color="textSecondary">
+                      ${order.tickets[key].price} * {order.tickets[key].amount}
+                    </Typography>
+                  </ListItem>
+                ))}
+                <ListItem>
+                  <ListItemText />
+                  <Typography variant="subtitle2">
+                    Total: ${order.total}
+                  </Typography>
+                </ListItem>
+              </List>
+            </Paper>
+          ))}
+          {!hasNext && (
+            <Divider>
+              <Chip label="No more orders" />
+            </Divider>
+          )}
+        </>
+      ) : (
+        <Divider>
+          <Chip label="You haven't placed any orders yet." />
+        </Divider>
+      )}
+    </Container>
+  );
 }
 
-export default Orders
+export default withAuth(Orders);

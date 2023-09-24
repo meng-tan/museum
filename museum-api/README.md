@@ -2,16 +2,15 @@
 
 ### Requirement
 
-* `node.js >= 12` installed
-* `npm >= 6` installed
+- `node.js >= 18` installed
+- `npm >= 6` installed
 
 ### Run server locally
 
-First run `npm install` to install dependencies.
+First run `yarn` to install dependencies.
 
-Second you need to config mongodb url in congif.js and import collections into mongodb:
+Second config mongodb url in config.js and import collections into mongodb:
 
-* `exhibition.json`
+- `exhibition.json`
 
-Then use `nodemon server.js` to run the server.
-
+Then use `node server.js` or `yarn nodemon` to run the server.

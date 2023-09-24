@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/f8e73325-bd05-48f1-86fd-cb5e25f02980/resourceGroups/Museum/providers/Microsoft.Web/sites/museum-api",
+    "appService.deploySubpath": "museum-api"
+}

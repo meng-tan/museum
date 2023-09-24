@@ -1,16 +1,28 @@
-const express = require('express');
+const express = require("express");
+const userController = require("../controllers/userController");
+const auth = require("../services/auth");
+
 const userRouter = express.Router();
-const userController = require('../controllers/userController')
-const auth = require('../services/auth')
 
-userRouter.post('/register',userController.register)
-userRouter.post('/login', userController.login)
-userRouter.post('/google-login', userController.googleLogin)
+userRouter.post("/register", userController.register);
+userRouter.post("/login", userController.login);
+userRouter.post("/google-auth", userController.googleAuth);
 
-
-userRouter.get('/payments', auth.checkToken, userController.listPayments)
-userRouter.get('/payments/id/:id', auth.checkToken, userController.findPaymentById)
-userRouter.post('/exhibitions/buy-tickets', auth.checkToken, userController.buyTickets)
-userRouter.get('/exhibition-orders/page/:page', auth.checkToken, userController.listExhibitionOrders)
+userRouter.get("/payments", auth.checkToken, userController.listPayments);
+userRouter.get(
+  "/payments/:id",
+  auth.checkToken,
+  userController.findPaymentById
+);
+userRouter.post(
+  "/exhibitions/buy-tickets",
+  auth.checkToken,
+  userController.buyTickets
+);
+userRouter.get(
+  "/exhibition-orders",
+  auth.checkToken,
+  userController.listExhibitionOrders
+);
 
 module.exports = userRouter;
