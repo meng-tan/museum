@@ -4,6 +4,7 @@ import About from "./components/about";
 import AuthPageLayout from "./components/auth/AuthPageLayout";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import Collection from "./components/collection";
 import Dashboard from "./components/dashboard";
 import ExhibitionsLayout, { Exhibitions } from "./components/exhibitions";
 import Home from "./components/home";
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: "visit",
             element: <Visit />
+          },
+          {
+            path: "collection",
+            element: <Collection />
           },
           {
             path: "exhibitions",

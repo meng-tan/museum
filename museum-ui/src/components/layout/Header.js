@@ -98,7 +98,8 @@ const drawerWidth = 240;
 const pages = [
   { title: "Exhibitions", link: "/exhibitions" },
   { title: "Visit", link: "/visit" },
-  { title: "About", link: "/about" }
+  { title: "About", link: "/about" },
+  { title: "Collection", link: "/collection" }
 ];
 
 const Header = forwardRef((props, ref) => {
