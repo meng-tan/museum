@@ -46,7 +46,7 @@ export default function Footer() {
               Contact
             </Typography>
             <Typography component="a" href="tel:857-250-0027">
-              857-250-0027
+              {APP.PHONE}
             </Typography>
             <br />
             <Typography component="a" href="mailto:tanmeng.job@gmail.com">

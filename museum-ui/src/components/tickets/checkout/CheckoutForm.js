@@ -170,7 +170,7 @@ export default function CheckoutForm(props) {
                 error={cvv.isValid === false}
                 helperText={
                   cvv.isValid === false
-                    ? "Last 3 digits on signature strip"
+                    ? "Last 3 or 4 digits on signature strip"
                     : " "
                 }
               />
