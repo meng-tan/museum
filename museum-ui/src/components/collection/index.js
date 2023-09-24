@@ -12,7 +12,7 @@ const number = css({
   fontSize: "1.4rem"
 });
 const borderBottom = css({
-  borderBottom: "1px solid #77CCE9"
+  borderBottom: "1.5px dashed #77CCE9"
 });
 
 const data = [
@@ -90,11 +90,15 @@ export default function Collection() {
       <Grid
         container
         component={Paper}
+        elevation={6}
         sx={{
           bgcolor: "#EAF5F9",
+          border: "1px solid #77CCE9",
           borderRadius: "1rem",
           p: 2,
+          pb: 3,
           m: 2,
+          mb: 4,
           alignSelf: "center",
           width: {
             xs: "calc(100% - 16px)",
