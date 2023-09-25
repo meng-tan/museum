@@ -132,7 +132,7 @@ export default function Home() {
             sx={{
               textAlign: "center",
               textTransform: "uppercase",
-              color: (theme) => theme.palette.primary.contrastText
+              color: "primary.contrastText"
             }}
           >
             Featured

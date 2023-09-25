@@ -31,16 +31,16 @@ export default function ButtonToTop() {
       sx={{
         position: "fixed",
         bottom: {
-          md: "10vh",
-          xs: "50px"
+          // md: "10vh",
+          xs: "40px"
         },
         right: {
-          md: "10vh",
-          xs: "50px"
+          // md: "10vh",
+          xs: "40px"
         },
         minWidth: "min-content",
         p: 1,
-        borderRadius: "50%",
+        // borderRadius: "50%",
         opacity: 0,
         transform: "translateY(10vh)",
         transition: "all .5s ease",

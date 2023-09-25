@@ -38,7 +38,7 @@ const BackgroundContainer = ({ bgImg, nextAnchor, children, sx, ...rest }) => {
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              bottom: "10vh",
+              bottom: "15vh",
               color: "primary.contrastText",
               border: "2px dashed #fff",
               animation: (theme) => `${halo(theme)} 4s ease-in-out infinite`
