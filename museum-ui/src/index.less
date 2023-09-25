@@ -48,11 +48,14 @@ html {
   }
 
   .fixed-bg-img {
-    background-attachment: scroll; //fallback
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+
+    .ios-fixed-fallback {
+      background-attachment: scroll !important;
+    }
   }
 }
 

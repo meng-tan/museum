@@ -56,6 +56,16 @@ export default function Home() {
   const homeRef = useRef();
   // const navigate = useNavigate();
 
+  useEffect(() => {
+    const iOS = /(iPad|iPhone)/i.test(navigator.userAgent);
+    if (iOS) {
+      const elements = document.getElementsByClassName("fixed-bg-img");
+      elements.forEach((ele) => {
+        ele.classList.add("ios-fixed-fallback");
+      });
+    }
+  }, []);
+
   const handleHashSegment = () => {
     const homeElement = homeRef.current;
     const rootElement = document.documentElement;
