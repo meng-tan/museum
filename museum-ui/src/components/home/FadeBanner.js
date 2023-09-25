@@ -51,7 +51,7 @@ const FadeBanner = () => {
   return (
     <Box
       sx={{
-        position: "relative",
+        position: "absolute",
         top: "50%",
         transform: "translateY(-50%)",
         width: {
