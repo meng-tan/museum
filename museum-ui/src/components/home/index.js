@@ -61,7 +61,7 @@ export default function Home() {
     if (iOS) {
       const collection = document.getElementsByClassName("fixed-bg-img");
       for (let i = 0; i < collection.length; i++) {
-        collection[i].classList.add("ios-fixed-fallback");
+        collection[i].classList.replace("fixed-bg-img", "ios-fixed-fallback");
       }
     }
   }, []);
