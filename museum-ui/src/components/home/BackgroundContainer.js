@@ -3,6 +3,8 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 
+import { Transition } from "@layout/Transition";
+
 const halo = (theme) => keyframes`
 50% {
   box-shadow: inset 0px 0px 10px 10px ${theme.palette.primary.light},
@@ -29,20 +31,22 @@ const BackgroundContainer = ({ bgImg, nextAnchor, children, sx, ...rest }) => {
     >
       {children}
       {nextAnchor && (
-        <IconButton
-          href={nextAnchor}
-          sx={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            bottom: "3vw",
-            color: (theme) => theme.palette.primary.contrastText,
-            border: "2px dashed #fff",
-            animation: (theme) => `${halo(theme)} 4s ease-in-out infinite`
-          }}
-        >
-          <ArrowDownwardIcon />
-        </IconButton>
+        <Transition loop={true}>
+          <IconButton
+            href={nextAnchor}
+            sx={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              bottom: "10vh",
+              color: "primary.contrastText",
+              border: "2px dashed #fff",
+              animation: (theme) => `${halo(theme)} 4s ease-in-out infinite`
+            }}
+          >
+            <ArrowDownwardIcon />
+          </IconButton>
+        </Transition>
       )}
     </Box>
   );

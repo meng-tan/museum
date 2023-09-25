@@ -56,7 +56,7 @@ module.exports = {
             group: "builtin"
           },
           {
-            pattern: "*@(service|tools|features|config)/**",
+            pattern: "*@(layout|service|tools|features|config)/**",
             position: "after",
             group: "external"
           },
