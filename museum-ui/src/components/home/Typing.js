@@ -50,9 +50,14 @@ export default function Typing() {
     <Box
       sx={{
         height: "100%",
+        width: {
+          xs: "75%",
+          md: "100%"
+        },
+        m: "auto",
         display: "flex",
-        alignItems: "center",
-        px: "25vw"
+        justifyContent: "center",
+        alignItems: "center"
       }}
     >
       <Typography

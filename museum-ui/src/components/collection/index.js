@@ -1,10 +1,11 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { css } from "@emotion/react";
-import { Box, Typography, Grid, Paper } from "@mui/material";
+import { Box, Typography, Grid, Paper, Slide } from "@mui/material";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
+import { Transition } from "@layout/Transition";
 import { APP } from "@tools/constant";
 
 const number = css({
@@ -26,6 +27,12 @@ const data = [
   { name: "Archival objects", amount: 750, y: 19.48 }
 ];
 export default function Collection() {
+  const targetRef = useRef(null);
+  const [target, setTarget] = useState(null);
+  useEffect(() => {
+    setTarget(targetRef.current);
+  }, []);
+
   const options = {
     chart: {
       backgroundColor: "transparent"
@@ -33,7 +40,6 @@ export default function Collection() {
     title: {
       text: ""
     },
-
     series: [
       {
         type: "pie",
@@ -42,12 +48,14 @@ export default function Collection() {
       }
     ]
   };
+
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column"
       }}
+      ref={targetRef}
     >
       <Box
         sx={{
@@ -64,79 +72,89 @@ export default function Collection() {
           //   clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)"
         }}
       >
-        <Typography
-          variant="h5"
-          color="primary.light"
-          textTransform="uppercase"
-        >
-          Collection
-        </Typography>
-        <Typography
-          variant="subtitle1"
+        <Transition>
+          <Typography
+            variant="h5"
+            color="primary.light"
+            textTransform="uppercase"
+          >
+            Collection
+          </Typography>
+        </Transition>
+        <Transition delay={4}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              lineHeight: "2rem",
+              width: "max(75%, 300px)"
+            }}
+          >
+            {APP.NAME} collected and carefully displayed a collection comprised
+            of more than <span css={number}>2600</span> paintings, sculptures,
+            furniture, textiles, silver, ceramics, <span css={number}>500</span>{" "}
+            rare books, and <span css={number}>750</span> archival objects from
+            ancient Rome, Medieval Europe, Renaissance Italy, Asia, the Islamic
+            world and 19th-century France and America.
+          </Typography>
+        </Transition>
+      </Box>
+      <Transition
+        component={Slide}
+        target={target}
+        threshold={0}
+        direction="up"
+      >
+        <Grid
+          container
+          component={Paper}
+          elevation={6}
           sx={{
-            lineHeight: "2rem",
-            width: "max(75%, 300px)"
+            bgcolor: "#EAF5F9",
+            border: "1px solid #77CCE9",
+            borderRadius: "1rem",
+            p: 2,
+            pb: 3,
+            m: 2,
+            mb: 4,
+            alignSelf: "center",
+            width: {
+              xs: "calc(100% - 16px)",
+              md: "75%"
+            }
           }}
         >
-          {APP.NAME} collected and carefully displayed a collection comprised of
-          more than <span css={number}>2600</span> paintings, sculptures,
-          furniture, textiles, silver, ceramics, <span css={number}>500</span>{" "}
-          rare books, and <span css={number}>750</span> archival objects from
-          ancient Rome, Medieval Europe, Renaissance Italy, Asia, the Islamic
-          world and 19th-century France and America.
-        </Typography>
-      </Box>
-
-      <Grid
-        container
-        component={Paper}
-        elevation={6}
-        sx={{
-          bgcolor: "#EAF5F9",
-          border: "1px solid #77CCE9",
-          borderRadius: "1rem",
-          p: 2,
-          pb: 3,
-          m: 2,
-          mb: 4,
-          alignSelf: "center",
-          width: {
-            xs: "calc(100% - 16px)",
-            md: "75%"
-          }
-        }}
-      >
-        <Grid item xs={12} md={6}>
-          <Typography variant="h5" gutterBottom>
-            Statistics
-          </Typography>
-          <Box
-            display="grid"
-            gridTemplateColumns={"repeat(2, 1fr)"}
-            rowGap={2}
-            alignItems={"end"}
-          >
-            {data.map((item) => (
-              <Fragment key={item.name}>
-                <Typography variant="body1" css={borderBottom}>
-                  {item.name}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  textAlign={"right"}
-                  //   justifySelf={"end"}
-                  css={borderBottom}
-                >
-                  {item.amount}
-                </Typography>
-              </Fragment>
-            ))}
-          </Box>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" gutterBottom>
+              Statistics
+            </Typography>
+            <Box
+              display="grid"
+              gridTemplateColumns={"repeat(2, 1fr)"}
+              rowGap={2}
+              alignItems={"end"}
+            >
+              {data.map((item) => (
+                <Fragment key={item.name}>
+                  <Typography variant="body1" css={borderBottom}>
+                    {item.name}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    textAlign={"right"}
+                    //   justifySelf={"end"}
+                    css={borderBottom}
+                  >
+                    {item.amount}
+                  </Typography>
+                </Fragment>
+              ))}
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <HighchartsReact highcharts={Highcharts} options={options} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <HighchartsReact highcharts={Highcharts} options={options} />
-        </Grid>
-      </Grid>
+      </Transition>
     </Box>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Box, Container, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import classNames from "classnames";
 
 const FlipTypography = styled(Typography)(
   ({ theme }) => `
@@ -28,21 +29,15 @@ const FadeBox = styled(Box)`
   bottom: 0;
   left: 0;
   right: 0;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
   transition: opacity 1.5s ease-in;
+  opacity: 0;
+  p {
+    transform: rotateX(90deg);
+  }
   &.fade-in {
     opacity: 1;
     p {
       transform: rotateX(0deg);
-    }
-  }
-  &.fade-out {
-    opacity: 0;
-    p {
-      transform: rotateX(90deg);
     }
   }
 `;
@@ -77,7 +72,9 @@ function Slideshow({ slides, ...rest }) {
           sx={{
             backgroundImage: `url(${item.url})`
           }}
-          className={index === current ? "fade-in" : "fade-out"}
+          className={classNames("fixed-bg-img", {
+            "fade-in": index === current
+          })}
         >
           <Container
             maxWidth="xs"
@@ -85,7 +82,7 @@ function Slideshow({ slides, ...rest }) {
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              placeContent: "center"
+              justifyContent: "center"
             }}
           >
             <FlipTypography>{item.alt}</FlipTypography>
