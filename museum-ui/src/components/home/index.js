@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { Button, Typography, Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { debounce } from "@mui/material/utils";
+import { Typography, Box } from "@mui/material";
+import debounce from "lodash/debounce";
+
+import ButtonToTop from "@layout/ButtonToTop";
 
 import BackgroundContainer from "./BackgroundContainer";
 import Carousel from "./Carousel";
@@ -52,45 +52,9 @@ const slides = [
   }
 ];
 
-const TopButton = styled(Button)(
-  ({ theme }) => `
-  position: fixed;
-  bottom: 3vw;
-  right: 3vw;
-  min-width: min-content;
-  padding: ${theme.spacing(1)};
-  border-radius: 50%;
-  opacity: 0;
-  transform: translateY(3vw);
-  transition: all .5s ease;
-  &.show {
-    opacity: 1;
-    transform: none;
-  }
-`
-);
-
 export default function Home() {
   const homeRef = useRef();
   // const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleTopBtn = () => {
-      const scrollToTopBtn = document.getElementById("top");
-      const rootElement = document.documentElement;
-      // const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
-      if (rootElement.scrollTop / rootElement.clientHeight > 1) {
-        scrollToTopBtn.classList.add("show");
-      } else {
-        scrollToTopBtn.classList.remove("show");
-      }
-    };
-    document.addEventListener("scroll", handleTopBtn);
-
-    return () => {
-      document.removeEventListener("scroll", handleTopBtn);
-    };
-  }, []);
 
   const handleHashSegment = () => {
     const homeElement = homeRef.current;
@@ -177,9 +141,7 @@ export default function Home() {
         </Box>
       </BackgroundContainer>
 
-      <TopButton href="#bg1" id="top" variant="contained">
-        <ArrowUpwardIcon />
-      </TopButton>
+      <ButtonToTop />
     </Box>
   );
 }
