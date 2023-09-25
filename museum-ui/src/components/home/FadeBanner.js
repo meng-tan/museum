@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { keyframes } from "@emotion/react";
-import { Typography, Button, Container } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Typography, Button, Box } from "@mui/material";
 
 const slideFromLeft = keyframes`
 0% {
   opacity: 0;
-  transform: translate3d(-50%,0,0);
+  transform: translate3d(-100%,0,0);
 }
 100% {
   opacity: 1;
@@ -19,28 +18,13 @@ const slideFromLeft = keyframes`
 const slideFromRight = keyframes`
 0% {
   opacity: 0;
-  transform: translate3d(50%,0,0);
+  transform: translate3d(100%,0,0);
 }
 100% {
   opacity: 1;
-  transform: translate3d(-50%,0,0);
+  transform: translate3d(0,0,0);
 }
 `;
-
-const FadeBox = styled(Container)(
-  ({ theme }) => `
-  color: ${theme.palette.primary.contrastText};
-  transition: opacity 1500ms ease-out, visibility 1500ms ease-out;
-  &.hide {
-    opacity: 0;
-    visibility: hidden;
-  }
-  &.visible {
-    opacity: 1;
-    visibility: visible;
-  }
-`
-);
 
 const FadeBanner = () => {
   const domRef = useRef();
@@ -65,18 +49,33 @@ const FadeBanner = () => {
   }, []);
 
   return (
-    <FadeBox
-      maxWidth="md"
+    <Box
       sx={{
         position: "relative",
         top: "50%",
         transform: "translateY(-50%)",
-        border: {
-          sx: "2.5vw solid transparent",
-          md: "2.5vw solid rgba(255,255,255,.7)"
+        width: {
+          md: "75%"
         },
+        m: {
+          xs: 1,
+          md: "auto"
+        },
+        border: "2vw solid rgba(255,255,255,.7)",
         padding: "2vw",
-        overflow: "hidden"
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        color: "primary.contrastText",
+        transition: "opacity 1.5s ease-in, visibility 1.5s ease-in",
+        "&.hide": {
+          opacity: 0,
+          visibility: "hidden"
+        },
+        "&.visible": {
+          opacity: 1,
+          visibility: "visible"
+        }
       }}
       ref={domRef}
       className={isVisible ? "visible" : "hide"}
@@ -96,7 +95,7 @@ const FadeBanner = () => {
           mt: 2,
           mb: 1,
           animation: isVisible && `${slideFromLeft} 1s ease`,
-          color: (theme) => theme.palette.primary.main,
+          color: "primary.main",
           textShadow: (theme) =>
             `2px 2px 2px ${theme.palette.primary.contrastText}, 0 0 1rem ${theme.palette.primary.light}`
         }}
@@ -106,7 +105,8 @@ const FadeBanner = () => {
       <Typography
         variant="body1"
         sx={{
-          color: (theme) => theme.palette.primary.contrastText,
+          mb: 4,
+          color: "primary.contrastText",
           animation: isVisible && `${slideFromLeft} 3s ease`
         }}
       >
@@ -117,15 +117,13 @@ const FadeBanner = () => {
         component={Link}
         to="/exhibitions"
         sx={{
-          mt: 4,
-          left: "50%",
-          transform: "translateX(-50%)",
+          m: "auto",
           animation: isVisible && `${slideFromRight} 4s ease`
         }}
       >
         More Exhibitions
       </Button>
-    </FadeBox>
+    </Box>
   );
 };
 
