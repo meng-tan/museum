@@ -19,7 +19,6 @@ export const Transition = ({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        console.log(entries);
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setVisible(entry.isIntersecting);

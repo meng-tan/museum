@@ -10,7 +10,7 @@ export default function ButtonToTop() {
       const scrollToTopBtn = document.getElementById("top");
       const rootElement = document.documentElement;
       // const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
-      if (rootElement.scrollTop / rootElement.clientHeight > 1) {
+      if (rootElement.scrollTop / rootElement.clientHeight > 2.9) {
         scrollToTopBtn.classList.add("show");
       } else {
         scrollToTopBtn.classList.remove("show");
@@ -30,14 +30,8 @@ export default function ButtonToTop() {
       variant="contained"
       sx={{
         position: "fixed",
-        bottom: {
-          // md: "10vh",
-          xs: "40px"
-        },
-        right: {
-          // md: "10vh",
-          xs: "40px"
-        },
+        bottom: "40px",
+        right: "40px",
         minWidth: "min-content",
         p: 1,
         // borderRadius: "50%",
