@@ -56,44 +56,32 @@ export default function Home() {
   const homeRef = useRef();
   // const navigate = useNavigate();
 
-  useEffect(() => {
-    const iOS = /(iPad|iPhone)/i.test(navigator.userAgent);
-    if (iOS) {
-      const collection = document.getElementsByClassName("fixed-bg-img");
-      for (let i = 0; i < collection.length; i++) {
-        alert(i, collection[i]);
-        console.log(i, collection[i]);
-        collection[i].classList.replace("fixed-bg-img", "ios-fixed-fallback");
-      }
-    }
-  }, []);
-
-  const handleHashSegment = () => {
-    const homeElement = homeRef.current;
-    const rootElement = document.documentElement;
-    const ratio = rootElement.scrollTop / homeElement.clientHeight;
-    if (ratio <= 0.125) {
-      if (location.hash !== "#bg1") {
-        history.replaceState({}, undefined, "/#bg1");
-        // navigate("/#bg1");
-      }
-    } else if (ratio > 0.125 && ratio <= 0.375) {
-      if (location.hash !== "#bg2") {
-        history.replaceState({}, undefined, "/#bg2");
-      }
-    } else if (ratio > 0.375 && ratio <= 0.625) {
-      if (location.hash !== "#bg3") {
-        history.replaceState({}, undefined, "/#bg3");
-      }
-    } else {
-      if (location.hash !== "#bg4") {
-        history.replaceState({}, undefined, "/#bg4");
-      }
-    }
-  };
+  const ios = /(iPad|iPhone)/i.test(navigator.userAgent);
 
   useEffect(() => {
-    const debouncedHandleHashSegment = debounce(handleHashSegment, 500);
+    const debouncedHandleHashSegment = debounce(() => {
+      const homeElement = homeRef.current;
+      const rootElement = document.documentElement;
+      const ratio = rootElement.scrollTop / homeElement.clientHeight;
+      if (ratio <= 0.125) {
+        if (location.hash !== "#bg1") {
+          history.replaceState({}, undefined, "/#bg1");
+          // navigate("/#bg1");
+        }
+      } else if (ratio > 0.125 && ratio <= 0.375) {
+        if (location.hash !== "#bg2") {
+          history.replaceState({}, undefined, "/#bg2");
+        }
+      } else if (ratio > 0.375 && ratio <= 0.625) {
+        if (location.hash !== "#bg3") {
+          history.replaceState({}, undefined, "/#bg3");
+        }
+      } else {
+        if (location.hash !== "#bg4") {
+          history.replaceState({}, undefined, "/#bg4");
+        }
+      }
+    }, 500);
     document.addEventListener("scroll", debouncedHandleHashSegment);
     return () => {
       document.removeEventListener("scroll", debouncedHandleHashSegment);
@@ -110,16 +98,17 @@ export default function Home() {
           backgroundColor: "rgba(0, 0, 0, 0.15)",
           backgroundBlendMode: "multiply"
         }}
+        ios={ios}
       >
         <Typing />
       </BackgroundContainer>
 
-      <BackgroundContainer bgImg={mist} id="bg2" nextAnchor={"#bg3"}>
+      <BackgroundContainer bgImg={mist} id="bg2" nextAnchor={"#bg3"} ios={ios}>
         <FadeBanner />
       </BackgroundContainer>
 
       <BackgroundContainer id="bg3" nextAnchor={"#bg4"}>
-        <Slideshow slides={slides} />
+        <Slideshow slides={slides} ios={ios} />
       </BackgroundContainer>
 
       <BackgroundContainer

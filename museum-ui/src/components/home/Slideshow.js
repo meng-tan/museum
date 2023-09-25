@@ -42,7 +42,7 @@ const FadeBox = styled(Box)`
   }
 `;
 
-function Slideshow({ slides, ...rest }) {
+function Slideshow({ slides, ios, ...rest }) {
   const [current, setCurrent] = useState(0);
   useEffect(() => {
     const id = setInterval(() => {
@@ -72,9 +72,11 @@ function Slideshow({ slides, ...rest }) {
           sx={{
             backgroundImage: `url(${item.url})`
           }}
-          className={classNames("fixed-bg-img", {
-            "fade-in": index === current
-          })}
+          className={classNames(
+            { "fixed-bg-img": !ios },
+            { "ios-fixed-fallback": ios },
+            { "fade-in": index === current }
+          )}
         >
           <Container
             maxWidth="xs"
