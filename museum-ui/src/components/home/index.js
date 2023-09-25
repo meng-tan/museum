@@ -59,10 +59,10 @@ export default function Home() {
   useEffect(() => {
     const iOS = /(iPad|iPhone)/i.test(navigator.userAgent);
     if (iOS) {
-      const elements = document.getElementsByClassName("fixed-bg-img");
-      elements.forEach((ele) => {
-        ele.classList.add("ios-fixed-fallback");
-      });
+      const collection = document.getElementsByClassName("fixed-bg-img");
+      for (let i = 0; i < collection.length; i++) {
+        collection[i].classList.add("ios-fixed-fallback");
+      }
     }
   }, []);
 
