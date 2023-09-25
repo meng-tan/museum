@@ -2,6 +2,7 @@ import { keyframes } from "@emotion/react";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import classNames from "classnames";
 
 import { Transition } from "@layout/Transition";
 
@@ -12,19 +13,23 @@ const halo = (theme) => keyframes`
   0px 0px 10px 5px rgba(255,255,255,0.7);
 }
 `;
-const BackgroundContainer = ({ bgImg, nextAnchor, children, sx, ...rest }) => {
+const BackgroundContainer = ({
+  bgImg,
+  nextAnchor,
+  children,
+  sx,
+  className,
+  ...rest
+}) => {
   return (
     <Box
       component="section"
+      className={classNames(className, "fixed-bg-img")}
       sx={{
         height: "100vh",
         minHeight: 500,
         position: "relative",
-        backgroundAttachment: "fixed",
         backgroundImage: bgImg && `url(${bgImg})`,
-        backgroundPosition: "center center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
         ...sx
       }}
       {...rest}

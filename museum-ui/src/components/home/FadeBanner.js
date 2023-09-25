@@ -53,13 +53,11 @@ const FadeBanner = () => {
       sx={{
         position: "absolute",
         top: "50%",
-        transform: "translateY(-50%)",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         width: {
-          md: "75%"
-        },
-        m: {
-          xs: 1,
-          md: "auto"
+          xs: "90%",
+          md: "70%"
         },
         border: "2vw solid rgba(255,255,255,.7)",
         padding: "2vw",
