@@ -98,6 +98,34 @@ export default function Visit() {
         </Typography>
         <Typography variant="body2">Take the X, Y, or Z bus lines</Typography>
       </Container>
+
+      <Container maxWidth="md">
+        <Typography variant="h4" color="primary.light" mt={3}>
+          Plan A Visit
+        </Typography>
+      </Container>
+
+      <Container
+        maxWidth="md"
+        sx={{
+          py: "2rem",
+          my: 2,
+          background: "var(--bg-gray)"
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Hours
+        </Typography>
+        <Typography variant="body1">
+          Tuesday &ndash; Sunday, 10 am &ndash; 5 pm
+        </Typography>
+        <Typography variant="body1">Friday, 10 am &ndash; 9 pm</Typography>
+        <Typography variant="body1">Closed Monday</Typography>
+        <Typography variant="body2" mt={2}>
+          Closed September 19, Thanksgiving Day, December 25, January 1, and the
+          first Monday in May.
+        </Typography>
+      </Container>
     </Box>
   );
 }

@@ -17,6 +17,7 @@ const BackgroundContainer = ({
   bgImg,
   nextAnchor,
   children,
+  ios,
   sx,
   className,
   ...rest
@@ -24,7 +25,11 @@ const BackgroundContainer = ({
   return (
     <Box
       component="section"
-      className={classNames(className, "fixed-bg-img")}
+      className={classNames(
+        className,
+        { "fixed-bg-img": !ios },
+        { "ios-fixed-fallback": ios }
+      )}
       sx={{
         height: "100vh",
         minHeight: 500,
