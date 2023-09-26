@@ -65,8 +65,8 @@ export default function About() {
         xs={12}
         md={6}
         sx={{
-          minHeight: "inherit",
-          display: "flex"
+          display: "flex",
+          py: 4
         }}
       >
         <Box
